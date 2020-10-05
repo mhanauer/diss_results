@@ -58,11 +58,60 @@ bpeps_results
 Function for confidence in pss and bpeps
 ```{r}
 confit_pss_bpeps =  dat_needs[,19:32]
-mean_confit_pss_bpeps = apply(confit_pss_bpeps, 2, mean, na.rm = TRUE)
-sd_confit_pss_bpeps = apply(confit_pss_bpeps, 2, sd, na.rm = TRUE)
-mean_sd_confit_pss_bpeps =  cbind(mean_confit_pss_bpeps, sd_confit_pss_bpeps)
-names(mean_sd_confit_pss_bpeps) = c("mean", "sd")
-mean_sd_confit_pss_bpeps = round(mean_sd_confit_pss_bpeps, 2)
-mean_sd_confit_pss_bpeps
+mean_sd_fun = function(dat){
+dat_mean = apply(dat, 2, mean, na.rm = TRUE)
+dat_sd = apply(dat, 2, sd, na.rm = TRUE)
+dat_mean_sd =  cbind(dat_mean, dat_sd)
+names(dat_mean_sd) = c("mean", "sd")
+dat_mean_sd = round(dat_mean_sd, 2)
+return(dat_mean_sd)
+}
+
+confit_pss_bpeps_results = mean_sd_fun(confit_pss_bpeps)
+confit_pss_bpeps_results
+```
+See if anything has completed a training in evaluating program sustainabiltiy before
+```{r}
+describe.factor(dat_needs$complete_train)
+```
+Training preferences
+training_cri
+```{r}
+ls_dat =  dat_needs[,37:46]
+ls_dat_results = mean_sd_fun(ls_dat)
+ls_dat_results
+
+```
+Other prefered learning strategies
+```{r}
+dat_needs$learning_prefer
+```
+Training length
+```{r}
+describe.factor(dat_needs$training_length)
+```
+Barriers, faciliators, and other general comments
+```{r}
+dat_needs$faciliators_train
+dat_needs$barriers_train
+dat_needs$general
+```
+Demographics needs
+ethnicity
+race
+gender
+edu
+exp_eval
+exp_research
+matt_time_spent
+employment_length
+```{r}
+## Remove 67 and 62 they are fill in the blanks not counts 
+dat_needs[,67:69]
+dat_needs[,62:69]
+demos_dat = dat_needs[,c(53:61, 63:66, 68:72)]
+demos_dat_results = apply(demos_dat, 2, function(x){describe.factor(x)})
+demos_dat_results = t(data.frame(demos_dat_results))
+demos_dat_results
 ```
 
