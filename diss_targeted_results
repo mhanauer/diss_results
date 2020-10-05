@@ -1,0 +1,68 @@
+---
+
+title: "Needs assessment Diss"
+
+output: html_document
+
+---
+
+
+Clean the data
+1. Clean the date completed
+```{r}
+setwd("C:/Users/Matthew.Hanauer/Desktop/Diss")
+data_needs = read.csv("CRINeedsAssessment_DATA_2020-10-05_1249.csv", header  = TRUE)
+dat_needs = data_needs
+library(lubridate)
+head(dat_needs)
+dat_needs = subset(dat_needs, needs_assessment_timestamp != "[not completed]")
+dat_needs
+date_only = list()
+
+for(i in 1:dim(dat_needs)[1]){
+ date_only[[i]] =  strsplit(dat_needs$needs_assessment_timestamp[[i]]," ")[[1]][1]
+}
+date_only = unlist(date_only)
+date_only = ymd(date_only)
+dat_needs$needs_assessment_timestamp = date_only
+dat_needs$needs_assessment_timestamp
+### Subset appropriate date
+dat_needs = subset(dat_needs, needs_assessment_timestamp > "2019-01-01")
+dat_needs
+```
+Get a count and percentage of pss 
+0 is first then 1
+```{r}
+pss_dat = dat_needs[,5:12]
+describe.factor(pss_dat$pss___1, decr.order = FALSE)
+bpeps_fun = function(dat){
+  results  = apply(dat, 2, function(x){describe.factor(x, decr.order = FALSE)})
+  results  = unlist(results)
+  results = matrix(results, ncol = 2, byrow = TRUE)
+  results = data.frame(results)
+  names(results) = c("count", "percentage")
+  names_dat =  rep(names(dat), each = 2)
+  results = data.frame(names_dat, results)
+  return(results)
+}
+
+pss_results =  bpeps_fun(pss_dat)
+pss_results
+```
+bpeps results
+```{r}
+bpeps_dat = dat_needs[,13:18]
+bpeps_results =  bpeps_fun(bpeps_dat)
+bpeps_results
+```
+Function for confidence in pss and bpeps
+```{r}
+confit_pss_bpeps =  dat_needs[,19:32]
+mean_confit_pss_bpeps = apply(confit_pss_bpeps, 2, mean, na.rm = TRUE)
+sd_confit_pss_bpeps = apply(confit_pss_bpeps, 2, sd, na.rm = TRUE)
+mean_sd_confit_pss_bpeps =  cbind(mean_confit_pss_bpeps, sd_confit_pss_bpeps)
+names(mean_sd_confit_pss_bpeps) = c("mean", "sd")
+mean_sd_confit_pss_bpeps = round(mean_sd_confit_pss_bpeps, 2)
+mean_sd_confit_pss_bpeps
+```
+
