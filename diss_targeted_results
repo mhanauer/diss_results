@@ -10,25 +10,17 @@ output: html_document
 Clean the data
 1. Clean the date completed
 ```{r}
-setwd("C:/Users/Matthew.Hanauer/Desktop/Diss")
-data_needs = read.csv("CRINeedsAssessment_DATA_2020-10-05_1249.csv", header  = TRUE)
+setwd("~/Desktop")
+library(prettyR)
+#setwd("C:/Users/Matthew.Hanauer/Desktop/Diss")
+data_needs = read.csv("CRINeedsAssessment_DATA_2020-10-10_0743.csv", header  = TRUE)
 dat_needs = data_needs
 library(lubridate)
 head(dat_needs)
+dat_needs = subset(dat_needs, consent_yes_no == "1")
 dat_needs = subset(dat_needs, needs_assessment_timestamp != "[not completed]")
 dat_needs
-date_only = list()
 
-for(i in 1:dim(dat_needs)[1]){
- date_only[[i]] =  strsplit(dat_needs$needs_assessment_timestamp[[i]]," ")[[1]][1]
-}
-date_only = unlist(date_only)
-date_only = ymd(date_only)
-dat_needs$needs_assessment_timestamp = date_only
-dat_needs$needs_assessment_timestamp
-### Subset appropriate date
-dat_needs = subset(dat_needs, needs_assessment_timestamp > "2019-01-01")
-dat_needs
 ```
 Get a count and percentage of pss 
 0 is first then 1
