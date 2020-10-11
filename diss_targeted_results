@@ -95,22 +95,50 @@ return(dat_mean_sd)
 
 confit_pss_bpeps_results = mean_sd_fun(confit_pss_bpeps)
 confit_pss_bpeps_results
+names_confit = c("Environmental support", "Funding stability", "Partnerships", "Organizational capacity", "Program evaluation", "Program adaptation", "Communication", "Strategic planning", "Developing prospective questions", "Identifying and evaluating systems affecting program sustainability", "Sustainment of the program evaluation", "Evaluation of program sustainability checklists", "Logic models for evaluating program sustainability", "Program evaluation implementation frameworks")
+confit_pss_bpeps_results = data.frame(names_confit, confit_pss_bpeps_results)
+confit_pss_bpeps_results
+names(confit_pss_bpeps_results) = c("PSS and BPEPS", "mean", "sd")
+confit_pss_bpeps_results$mean = ifelse(confit_pss_bpeps_results$mean >= 2.5, paste0(confit_pss_bpeps_results$mean, "*"), confit_pss_bpeps_results$mean)
+write.csv(confit_pss_bpeps_results, "confit_pss_bpeps_results.csv", row.names = FALSE)
 ```
 See if anything has completed a training in evaluating program sustainabiltiy before
 ```{r}
 describe.factor(dat_needs$complete_train)
 ```
+
 Training preferences
 training_cri
+
+Describe your level of agreement with the statement about the following online learning strategies: 
+I prefer the stated online learning strategy
+Opportunity to practice
+Student to student interactions
+Student to teacher interactions
+Using text and other media in training
+Feedback provided (either from students or teacher)
+Problem based learning
+Active learning approaches
+Reducing cognitive load (i.e., taking breaks)
+Synchronous video (i.e., live)
+Cognitive supports (e.g., diagrams, visual aids)
 ```{r}
 ls_dat =  dat_needs[,37:46]
 ls_dat_results = mean_sd_fun(ls_dat)
 ls_dat_results
-
+names_ls = c("Opportunity to practice",
+"Student to student interactions", "Student to teacher interactions", "Using text and other media in training", "Feedback provided (either from students or teacher)", "Problem based learning", "Active learning approaches", "Reducing cognitive load (i.e., taking breaks)", "Synchronous video (i.e., live)", "Cognitive supports (e.g., diagrams, visual aids)")
+ls_dat_results = data.frame(names_ls, ls_dat_results)
+ls_dat_results
+write.csv(ls_dat_results, "ls_dat_results.csv", row.names = FALSE)
+mean(ls_dat_results$dat_mean)
 ```
 Other prefered learning strategies
 ```{r}
-dat_needs$learning_prefer
+other_learning_strats = data.frame(learning_prefer = dat_needs$learning_prefer)
+other_learning_strats = na.omit(other_learning_strats)
+other_learning_strats
+write.csv(other_learning_strats, "other_learning_strats.csv")
 ```
 Training length
 ```{r}
@@ -118,9 +146,22 @@ describe.factor(dat_needs$training_length)
 ```
 Barriers, faciliators, and other general comments
 ```{r}
-dat_needs$faciliators_train
-dat_needs$barriers_train
-dat_needs$general
+library(dplyr)
+qual_fun = function(x, y){
+dat = data.frame(results = x[y])
+dat = dat %>% mutate_all(na_if,"")
+dat = na.omit(dat)
+return(dat)
+}
+
+barriers_train = qual_fun(dat_needs, "barriers_train")
+write.csv(barriers_train, "barriers_train.csv", row.names = FALSE)
+
+faciliators_train = qual_fun(dat_needs, "faciliators_train")
+write.csv(faciliators_train, "faciliators_train.csv", row.names = FALSE)
+
+general = qual_fun(dat_needs, "general")
+write.csv(general, "general.csv", row.names = FALSE)
 ```
 Demographics needs
 ethnicity
