@@ -13,20 +13,43 @@ Clean the data
 setwd("~/Desktop")
 library(prettyR)
 #setwd("C:/Users/Matthew.Hanauer/Desktop/Diss")
-data_needs = read.csv("CRINeedsAssessment_DATA_2020-10-10_0743.csv", header  = TRUE)
+data_needs = read.csv("CRINeedsAssessment_DATA_2020-10-11_0736.csv", header  = TRUE)
+### Remove me, Taylor, Nathan, Jennifer, Bre, and Joan before we count for percentage complete
+data_needs$keep = ifelse(data_needs$name == "Matt", 0, ifelse(data_needs$email == "Bre.Banks@centerstone.org", 0, ifelse(data_needs$email == "Joan.Sykora@centerstone.org", 0, ifelse(data_needs$email == "Nathan.Nehrt@centerstone.org", 0, ifelse(data_needs$email == "Taylor.Moore@centerstone.org", 0, ifelse(data_needs$email == "Jennifer.Lockman@centerstone.org", 0, 1))))))
+data_needs = subset(data_needs, keep == 1)
+data_needs$keep = NULL
+# check it worked
+sum(data_needs$email == "Bre.Banks@centerstone.org")
 dat_needs = data_needs
 library(lubridate)
 head(dat_needs)
+# Only include those who consented
 dat_needs = subset(dat_needs, consent_yes_no == "1")
+# Only include those completed the survey
 dat_needs = subset(dat_needs, needs_assessment_timestamp != "[not completed]")
-dat_needs
+write.csv(dat_needs, "dat_needs.csv", row.names = FALSE)
+```
+Get the percentage of people who completed the survey and n
+```{r}
+n_total = dim(data_needs)[1]
+n_complete = dim(dat_needs)[1]
+percent_complete = round(n_complete / n_total, 2)
+n_results = cbind(n_total, n_complete, percent_complete)
+n_results
 
 ```
+
 Get a count and percentage of pss 
 0 is first then 1
+
+Codebook info:
+
+1, Environmental support | 2, Funding stability | 3, Partnerships | 4, Organizational capacity | 5, Program evaluation | 6, Program adaptation | 7, Communications | 8, Strategic planning
+
+What program sustainability supporters, if any, would you like to know or know more about?
 ```{r}
 pss_dat = dat_needs[,5:12]
-describe.factor(pss_dat$pss___1, decr.order = FALSE)
+describe.factor(pss_dat$pss___3, decr.order = FALSE)
 bpeps_fun = function(dat){
   results  = apply(dat, 2, function(x){describe.factor(x, decr.order = FALSE)})
   results  = unlist(results)
@@ -35,17 +58,28 @@ bpeps_fun = function(dat){
   names(results) = c("count", "percentage")
   names_dat =  rep(names(dat), each = 2)
   results = data.frame(names_dat, results)
+  results$percentage = round(results$percentage, 2)
+  results$percentage = paste0(results$percentage, "%")
   return(results)
 }
 
 pss_results =  bpeps_fun(pss_dat)
+pss_results$names_dat = c("Environmental support = 0", "Environmental support = 1", "Funding stability = 0", "Funding stability = 1" , "Partnerships = 0", "Partnerships = 1", "Organizational capacity = 0", "Organizational capacity = 1", "Program evaluation = 0", "Program evaluation = 1", "Program adaptation = 0", "Program adaptation = 1", "Communications = 0", "Communications = 1", "Strategic planning = 0", "Strategic planning = 1")
 pss_results
+write.csv(pss_results, "pss_results.csv", row.names = FALSE)
 ```
 bpeps results
+
+What best practices in evaluating program sustainability, if any, would you like to know or know more about?
+
+1, Developing prospective questions | 2, Identifying and evaluating systems affecting program sustainability | 3, Sustainment of the program evaluation | 4, Evaluation of program sustainability checklists | 5, Logic models for evaluating program sustainability | 6, Program evaluation implementation frameworks
 ```{r}
 bpeps_dat = dat_needs[,13:18]
 bpeps_results =  bpeps_fun(bpeps_dat)
 bpeps_results
+bpeps_results$names_dat = c("Developing prospective questions = 0", "Developing prospective questions = 1", "Identifying and evaluating systems affecting program sustainability = 0", "Identifying and evaluating systems affecting program sustainability = 1" , "Sustainment of the program evaluation = 0", "Sustainment of the program evaluation = 1", "Evaluation of program sustainability checklists = 0", "Evaluation of program sustainability checklists = 1", "Logic models for evaluating program sustainability = 0", "Logic models for evaluating program sustainability = 1", "Program evaluation implementation frameworks = 0", "Program evaluation implementation frameworks = 1")
+bpeps_results
+write.csv(bpeps_results, "bpeps_results.csv", row.names = FALSE)
 ```
 Function for confidence in pss and bpeps
 ```{r}
