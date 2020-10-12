@@ -10,10 +10,10 @@ output: html_document
 Clean the data
 1. Clean the date completed
 ```{r}
-setwd("~/Desktop")
+#setwd("~/Desktop")
 library(prettyR)
-#setwd("C:/Users/Matthew.Hanauer/Desktop/Diss")
-data_needs = read.csv("CRINeedsAssessment_DATA_2020-10-11_0736.csv", header  = TRUE)
+setwd("C:/Users/Matthew.Hanauer/Desktop/Diss")
+data_needs = read.csv("CRINeedsAssessment_DATA_2020-10-12_0959.csv", header  = TRUE)
 ### Remove me, Taylor, Nathan, Jennifer, Bre, and Joan before we count for percentage complete
 data_needs$keep = ifelse(data_needs$name == "Matt", 0, ifelse(data_needs$email == "Bre.Banks@centerstone.org", 0, ifelse(data_needs$email == "Joan.Sykora@centerstone.org", 0, ifelse(data_needs$email == "Nathan.Nehrt@centerstone.org", 0, ifelse(data_needs$email == "Taylor.Moore@centerstone.org", 0, ifelse(data_needs$email == "Jennifer.Lockman@centerstone.org", 0, 1))))))
 data_needs = subset(data_needs, keep == 1)
@@ -49,7 +49,7 @@ Codebook info:
 What program sustainability supporters, if any, would you like to know or know more about?
 ```{r}
 pss_dat = dat_needs[,5:12]
-describe.factor(pss_dat$pss___3, decr.order = FALSE)
+
 bpeps_fun = function(dat){
   results  = apply(dat, 2, function(x){describe.factor(x, decr.order = FALSE)})
   results  = unlist(results)
@@ -68,6 +68,12 @@ pss_results$names_dat = c("Environmental support = 0", "Environmental support = 
 pss_results
 write.csv(pss_results, "pss_results.csv", row.names = FALSE)
 ```
+Test out changes
+```{r}
+describe.factor(pss_dat$pss___3, decr.order = FALSE)
+
+```
+
 bpeps results
 
 What best practices in evaluating program sustainability, if any, would you like to know or know more about?
