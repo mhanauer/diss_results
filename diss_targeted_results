@@ -53,26 +53,23 @@ pss_dat = dat_needs[,5:12]
 bpeps_fun = function(dat){
   results  = apply(dat, 2, function(x){describe.factor(x, decr.order = FALSE)})
   results  = unlist(results)
-  results = matrix(results, ncol = 2, byrow = TRUE)
+  results = matrix(results, ncol = 4, byrow = TRUE)
+  results = results[,3:4]
   results = data.frame(results)
   names(results) = c("count", "percentage")
-  names_dat =  rep(names(dat), each = 2)
+  names_dat =  names(dat)
   results = data.frame(names_dat, results)
   results$percentage = round(results$percentage, 2)
-  results$percentage = paste0(results$percentage, "%")
   return(results)
 }
-
 pss_results =  bpeps_fun(pss_dat)
-pss_results$names_dat = c("Environmental support = 0", "Environmental support = 1", "Funding stability = 0", "Funding stability = 1" , "Partnerships = 0", "Partnerships = 1", "Organizational capacity = 0", "Organizational capacity = 1", "Program evaluation = 0", "Program evaluation = 1", "Program adaptation = 0", "Program adaptation = 1", "Communications = 0", "Communications = 1", "Strategic planning = 0", "Strategic planning = 1")
+pss_results$names_dat = c("Environmental support", "Funding stability", "Partnerships", "Organizational capacity", "Program evaluation", "Program adaptation", "Communications", "Strategic planning")
+pss_results$names_dat = ifelse(pss_results$percentage >= 50, paste0(pss_results$names_dat, "*"), pss_results$names_dat)
+pss_results$percentage = paste0(pss_results$percentage, "%")
 pss_results
 write.csv(pss_results, "pss_results.csv", row.names = FALSE)
 ```
-Test out changes
-```{r}
-describe.factor(pss_dat$pss___3, decr.order = FALSE)
 
-```
 
 bpeps results
 
@@ -83,7 +80,10 @@ What best practices in evaluating program sustainability, if any, would you like
 bpeps_dat = dat_needs[,13:18]
 bpeps_results =  bpeps_fun(bpeps_dat)
 bpeps_results
-bpeps_results$names_dat = c("Developing prospective questions = 0", "Developing prospective questions = 1", "Identifying and evaluating systems affecting program sustainability = 0", "Identifying and evaluating systems affecting program sustainability = 1" , "Sustainment of the program evaluation = 0", "Sustainment of the program evaluation = 1", "Evaluation of program sustainability checklists = 0", "Evaluation of program sustainability checklists = 1", "Logic models for evaluating program sustainability = 0", "Logic models for evaluating program sustainability = 1", "Program evaluation implementation frameworks = 0", "Program evaluation implementation frameworks = 1")
+bpeps_results$names_dat = c("Developing prospective questions", "Identifying and evaluating systems affecting program sustainability", "Sustainment of the program evaluation", "Evaluation of program sustainability checklists", "Logic models for evaluating program sustainability", "Program evaluation implementation frameworks")
+bpeps_results$names_dat = ifelse(bpeps_results$percentage >= 50, paste0(bpeps_results$names_dat, "*"), bpeps_results$names_dat)
+bpeps_results$percentage = paste0(bpeps_results$percentage, "%")
+
 bpeps_results
 write.csv(bpeps_results, "bpeps_results.csv", row.names = FALSE)
 ```
