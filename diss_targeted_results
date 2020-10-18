@@ -10,10 +10,10 @@ output: html_document
 Clean the data
 1. Clean the date completed
 ```{r}
-#setwd("~/Desktop")
 library(prettyR)
-setwd("C:/Users/Matthew.Hanauer/Desktop/Diss")
-data_needs = read.csv("CRINeedsAssessment_DATA_2020-10-12_0959.csv", header  = TRUE)
+#setwd("C:/Users/Matthew.Hanauer/Desktop/Diss")
+setwd("/Volumes/GoogleDrive/My Drive/Diss/Results/targeted_needs_survey")
+data_needs = read.csv("CRINeedsAssessment_DATA_2020-10-15_1653.csv", header  = TRUE)
 ### Remove me, Taylor, Nathan, Jennifer, Bre, and Joan before we count for percentage complete
 data_needs$keep = ifelse(data_needs$name == "Matt", 0, ifelse(data_needs$email == "Bre.Banks@centerstone.org", 0, ifelse(data_needs$email == "Joan.Sykora@centerstone.org", 0, ifelse(data_needs$email == "Nathan.Nehrt@centerstone.org", 0, ifelse(data_needs$email == "Taylor.Moore@centerstone.org", 0, ifelse(data_needs$email == "Jennifer.Lockman@centerstone.org", 0, 1))))))
 data_needs = subset(data_needs, keep == 1)
@@ -170,21 +170,43 @@ general = qual_fun(dat_needs, "general")
 write.csv(general, "general.csv", row.names = FALSE)
 ```
 Demographics needs
-ethnicity
-race
-gender
-edu
-exp_eval
-exp_research
-matt_time_spent
-employment_length
+ethnicity: Not enough
+race: 1 = white 
+gender: Not enough
+edu: 1 greater than bachelor's 0 is some college and high school degree 
+exp_eval: greater than two years = 1
+exp_research greater than two years = 1
+matt_time_spent = Greater than zero projects versus none or na = 1 
+employment_length = Great than 4 which more than one year versus one year or less or na
 ```{r}
 ## Remove 67 and 62 they are fill in the blanks not counts 
 dat_needs[,67:69]
 dat_needs[,62:69]
-demos_dat = dat_needs[,c(53:61, 63:66, 68:72)]
-demos_dat_results = apply(demos_dat, 2, function(x){describe.factor(x)})
+demos_dat = dat_needs[,c(54, 68:72)]
+demos_dat[is.na(demos_dat)] = 1
+names(demos_dat) = c("white", "bachelor_great", "exp_eval_2_great", "exp_research_2_great", "matt_time_spent_0_great", "employ_length_1_great")
+demos_dat$bachelor_great = ifelse(demos_dat$bachelor_great > 1, 1, 0)
+demos_dat$exp_eval_2_great = ifelse(demos_dat$exp_eval_2_great >= 5, 1, 0)
+demos_dat$exp_research_2_great = ifelse(demos_dat$exp_research_2_great >= 5, 1, 0)
+demos_dat$matt_time_spent_0_great = ifelse(demos_dat$matt_time_spent_0_great >= 2, 1, 0)
+demos_dat$employ_length_1_great = ifelse(demos_dat$employ_length_1_great >= 5, 1, 0)
+demos_dat_results = apply(demos_dat, 2, function(x){describe.factor(x, decr.order = FALSE)})
 demos_dat_results = t(data.frame(demos_dat_results))
 demos_dat_results
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
