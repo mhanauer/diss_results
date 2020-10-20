@@ -1,0 +1,44 @@
+---
+title: "Test"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Load up AMT data
+```{r}
+setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/mkeps_pilot")
+mkeps = read.csv("mkeps_10_20_20.csv", header = TRUE, na.strings = c("", " "))
+head(mkeps)
+library(lubridate)
+mkeps
+mkeps =  mkeps[-c(1,2),] 
+start_date = list()
+
+for(i in 1:dim(mkeps)[1]){
+ start_date[[i]] =  strsplit(mkeps$StartDate[[i]]," ")[[1]][1]
+}
+
+start_date = unlist(start_date)
+start_date = mdy(start_date)
+mkeps$StartDate = start_date
+mkeps$StartDate
+
+### Only include those from October and after
+mkeps = subset(mkeps, StartDate >= "2020-10-20")
+dim(mkeps)
+
+mkeps = mkeps[!is.na(mkeps$AMT_ID_5),]
+write.csv(mkeps, "mkeps.csv", row.names = FALSE)
+
+
+```
+
+Now just subset for payment
+```{r}
+mkeps$Q_RelevantIDFraudScore = as.numeric(mkeps$Q_RelevantIDFraudScore)
+mkeps_payment = data.frame(Q_RelevantIDFraudScore = mkeps$Q_RelevantIDFraudScore,AMT_ID_5 =  mkeps$AMT_ID_5)
+write.csv(mkeps_payment, "mkeps_payment.csv", row.names = FALSE)
+```
+
