@@ -30,8 +30,6 @@ mkeps = subset(mkeps, StartDate >= "2020-10-20")
 dim(mkeps)
 
 mkeps = mkeps[!is.na(mkeps$AMT_ID_5),]
-write.csv(mkeps, "mkeps.csv", row.names = FALSE)
-
 
 ```
 
@@ -40,5 +38,33 @@ Now just subset for payment
 mkeps$Q_RelevantIDFraudScore = as.numeric(mkeps$Q_RelevantIDFraudScore)
 mkeps_payment = data.frame(Q_RelevantIDFraudScore = mkeps$Q_RelevantIDFraudScore,AMT_ID_5 =  mkeps$AMT_ID_5)
 write.csv(mkeps_payment, "mkeps_payment.csv", row.names = FALSE)
+## Keep the first time they responded by making it less than the threshold of 80
+
+mkeps_payment
+
 ```
+Now just MKEPS for getting data for grading
+```{r}
+mkeps$Q_RelevantIDFraudScore = as.numeric(mkeps$Q_RelevantIDFraudScore)
+mkeps
+mkeps$Q_RelevantIDFraudScore[2] = 79
+mkeps_grade  =subset(mkeps, Q_RelevantIDFraudScore < 80)
+### Just subset their AMT ID and mkeps questions for merging later
+mkeps_grade = mkeps_grade[,c(32:46, 55)]
+write.csv(mkeps_grade, "mkeps_grade.csv", row.names = FALSE)
+dim(mkeps_grade)
+```
+Now upload the graded data and link back
+```{r}
+setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/mkeps_pilot")
+mkeps_grade_example_10_21_20 = read.csv("mkeps_grade_example_10_21_20.csv", header = TRUE)
+mkeps_grade_example_10_21_20
+### Just get the score
+mkeps_grade_example_10_21_20 = mkeps_grade_example_10_21_20[c(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46)]
+### mkeps
+mkeps_graded_10_21_20 = merge(mkeps_grade_example_10_21_20, mkeps, by = "AMT_ID_check_4")
+dim(mkeps_graded_10_21_20)[1] == dim(mkeps_grade)[1]
+```
+
+
 
