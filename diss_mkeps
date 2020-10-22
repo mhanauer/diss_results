@@ -9,7 +9,7 @@ knitr::opts_chunk$set(echo = TRUE)
 Load up AMT data
 ```{r}
 setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/mkeps_pilot")
-mkeps = read.csv("mkeps_10_20_20.csv", header = TRUE, na.strings = c("", " "))
+mkeps = read.csv("mkeps_10_22_20.csv", header = TRUE, na.strings = c("", " "))
 head(mkeps)
 library(lubridate)
 mkeps
@@ -21,12 +21,12 @@ for(i in 1:dim(mkeps)[1]){
 }
 
 start_date = unlist(start_date)
-start_date = mdy(start_date)
+start_date = ymd(start_date)
 mkeps$StartDate = start_date
 mkeps$StartDate
 
 ### Only include those from October and after
-mkeps = subset(mkeps, StartDate >= "2020-10-20")
+mkeps = subset(mkeps, StartDate >= "2020-10-21")
 dim(mkeps)
 
 mkeps = mkeps[!is.na(mkeps$AMT_ID_5),]
@@ -47,12 +47,17 @@ Now just MKEPS for getting data for grading
 ```{r}
 mkeps$Q_RelevantIDFraudScore = as.numeric(mkeps$Q_RelevantIDFraudScore)
 mkeps
-mkeps$Q_RelevantIDFraudScore[2] = 79
 mkeps_grade  =subset(mkeps, Q_RelevantIDFraudScore < 80)
+### 
+mkeps_grade = mkeps_grade[-c(4:5),]
 ### Just subset their AMT ID and mkeps questions for merging later
 mkeps_grade = mkeps_grade[,c(32:46, 55)]
 write.csv(mkeps_grade, "mkeps_grade.csv", row.names = FALSE)
 dim(mkeps_grade)
+mkeps_grade
+
+339*52*40
+
 ```
 Now upload the graded data and link back
 ```{r}
