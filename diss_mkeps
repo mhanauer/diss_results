@@ -46,12 +46,23 @@ mkeps_payment
 Now just MKEPS for getting data for grading
 ```{r}
 mkeps$Q_RelevantIDFraudScore = as.numeric(mkeps$Q_RelevantIDFraudScore)
-mkeps
-mkeps_grade  =subset(mkeps, Q_RelevantIDFraudScore < 80)
+mkeps_grade = mkeps
+#mkeps_grade  =subset(mkeps, Q_RelevantIDFraudScore < 80)
 ### 
 #mkeps_grade = mkeps_grade[-c(4:5),]
 ### Just subset their AMT ID and mkeps questions for merging later
-mkeps_grade = mkeps_grade[,c(32:46, 55)]
+mkeps_grade = mkeps_grade[,c(6, 32:46, 55)]
+## Get time to help you identify low quality repsonses
+mkeps_grade$Duration..in.seconds. = as.numeric(mkeps_grade$Duration..in.seconds.)
+mkeps_grade$minutes = mkeps_grade$Duration..in.seconds. / 60
+range(mkeps_grade$minutes)
+mean(mkeps_grade$minutes)
+### You already paid the first 11 people
+mkeps_grade = mkeps_grade[-c(1:11),]
+### Need to remove these people
+# A2HO2H720XV8HU, ACXP8KHFX06KR
+
+
 write.csv(mkeps_grade, "mkeps_grade.csv", row.names = FALSE)
 dim(mkeps_grade)
 mkeps_grade
