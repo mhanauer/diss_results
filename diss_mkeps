@@ -9,7 +9,7 @@ knitr::opts_chunk$set(echo = TRUE)
 Load up AMT data
 ```{r}
 setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/mkeps_pilot")
-mkeps = read.csv("mkeps_10_28_20.csv", header = TRUE, na.strings = c("", " "))
+mkeps = read.csv("mkeps_10_30_20.csv", header = TRUE, na.strings = c("", " "))
 head(mkeps)
 library(lubridate)
 mkeps
@@ -55,17 +55,31 @@ mkeps_grade = mkeps_grade[,c(6, 32:46, 55)]
 ## Get time to help you identify low quality repsonses
 mkeps_grade$Duration..in.seconds. = as.numeric(mkeps_grade$Duration..in.seconds.)
 mkeps_grade$minutes = mkeps_grade$Duration..in.seconds. / 60
+
+
+mkeps_grade = subset(mkeps_grade, AMT_ID_check_4 != "A2HO2H720XV8HU" & AMT_ID_check_4 != "ACXP8KHFX06KR" & AMT_ID_check_4 != "AIX406KFA5O9J" & AMT_ID_check_4 != "A3JZYTT9UYV6U6" & AMT_ID_check_4 != "AMX69IKJUQ9EA" &  AMT_ID_check_4 != "A2F7DOEGHSENOY" &  AMT_ID_check_4 != "ALPH6Y4RS0G8C" &  AMT_ID_check_4 != "A2JET844BDM5YN" &  AMT_ID_check_4 != "A39CP46L3ODZHZ" &  AMT_ID_check_4 != "A2UJS8ELW3YUN9" &  AMT_ID_check_4 != "AH8EQV7IR97WE" &  AMT_ID_check_4 != "A5ZCUUP1MEKPJ" &  AMT_ID_check_4 != "A23C7BGEJEJOV8" & AMT_ID_check_4 != "A3LMF9D786PL8S" & AMT_ID_check_4 != "A3ANS61F3A656X" & AMT_ID_check_4 != "A1K8LPVDPWZSF9" & AMT_ID_check_4 != "AWHO5KT1KH28P" & AMT_ID_check_4 != "A2M6NAML0AGAJZ" & AMT_ID_check_4 != "A2OWM5OSE4SCFS" & AMT_ID_check_4 != "A39VB8OXHQZ6ZW" & AMT_ID_check_4 != "A1SGW0LMP12O59" &  AMT_ID_check_4 != "A3QN5EE1VSSJFS" & AMT_ID_check_4 != "A3OG21UO1AWTR7" & AMT_ID_check_4 != "A333RHGFT13OQM" & AMT_ID_check_4 != "A2RCT46ET5RNQN" & AMT_ID_check_4 != "A2ZLJQWCM8KU36" & AMT_ID_check_4 != "AE2U85I1TQ1E" & AMT_ID_check_4 != "A2TNZ157R0KWAC" & AMT_ID_check_4 != "COPIEDAXTUNPWPKSGPE" & AMT_ID_check_4 != "A1KXG3R48T74R3"  & AMT_ID_check_4 != "A2DIPD0N2YL9ST"  & AMT_ID_check_4 != "A36FVHZ2BEPYNM" & AMT_ID_check_4 != "AX6SVQJPPRLLJ" & AMT_ID_check_4 != "A28DMXUJCMX6SC" & AMT_ID_check_4 != "A3MNWO15YNEZNB" & AMT_ID_check_4 != "A82TD4PQWBMD1" & AMT_ID_check_4 != "A3RZAUWEE77S82" & AMT_ID_check_4 != "A3VGK3RB5D4NUM" & AMT_ID_check_4 != "A2QTJOFOT0709Q" & AMT_ID_check_4 != "A2F7DOEGHSENOY" & AMT_ID_check_4 != "A23C7BGEJEJOV8"  & AMT_ID_check_4 != "A6WKYH2T5ARRC" & AMT_ID_check_4 != "ACJFWPKW4JA59" & AMT_ID_check_4 != "A7NYDMF5BMLB7" & AMT_ID_check_4 != "A3JB1MBS7KFAGJ" & AMT_ID_check_4 != "A2M6NAML0AGAJZ" & AMT_ID_check_4 != "zgfdagdgdas" & AMT_ID_check_4 != "AAONZ5XA6MR5N" & AMT_ID_check_4 != "A3VRCG7T1S9D4J"  & AMT_ID_check_4 != "A2QTVSDHALU9GN" & AMT_ID_check_4 != "AJ5DO6BRNXQOA"  & AMT_ID_check_4 != "A3OUHE4W0AGUPE" & AMT_ID_check_4 != "A34IHD290HFEXY")
+
+dim(mkeps_grade)
 range(mkeps_grade$minutes)
 mean(mkeps_grade$minutes)
-### You already paid the first 35 people
-mkeps_grade = mkeps_grade[-c(1:88),]
-### Need to remove these people
-#A2HO2H720XV8HU, ACXP8KHFX06KR, AIX406KFA5O9J, A3JZYTT9UYV6U6, AMX69IKJUQ9EA, A2F7DOEGHSENOY, #ALPH6Y4RS0G8C, A2JET844BDM5YN, A39CP46L3ODZHZ, A2UJS8ELW3YUN9, AH8EQV7IR97WE, A5ZCUUP1MEKPJ, #A23C7BGEJEJOV8, A3LMF9D786PL8S, A3ANS61F3A656X, A1K8LPVDPWZSF9, AWHO5KT1KH28P, A2M6NAML0AGAJZ, #A2OWM5OSE4SCFS, A39VB8OXHQZ6ZW, A1SGW0LMP12O59, A3QN5EE1VSSJFS, A3OG21UO1AWTR7, A333RHGFT13OQM, #A2RCT46ET5RNQN, A2ZLJQWCM8KU36, AE2U85I1TQ1E, A2TNZ157R0KWAC, COPIEDAXTUNPWPKSGPE, A1KXG3R48T74R3, #A2DIPD0N2YL9ST, A36FVHZ2BEPYNM, AX6SVQJPPRLLJ, A28DMXUJCMX6SC, A3MNWO15YNEZNB
-test = subset(mkeps_grade, AMT_ID_check_4 != "A2HO2H720XV8HU" & AMT_ID_check_4 != "ACXP8KHFX06KR" & AMT_ID_check_4 != "AIX406KFA5O9J" & AMT_ID_check_4 != "A3JZYTT9UYV6U6" & AMT_ID_check_4 != "AMX69IKJUQ9EA" &  AMT_ID_check_4 != "A2F7DOEGHSENOY" &  AMT_ID_check_4 != "ALPH6Y4RS0G8C" &  AMT_ID_check_4 != "A2JET844BDM5YN" &  AMT_ID_check_4 != "A39CP46L3ODZHZ" &  AMT_ID_check_4 != "A2UJS8ELW3YUN9" &  AMT_ID_check_4 != "AH8EQV7IR97WE" &  AMT_ID_check_4 != "A5ZCUUP1MEKPJ" &  AMT_ID_check_4 != "A23C7BGEJEJOV8" & AMT_ID_check_4 != "A3LMF9D786PL8S" & AMT_ID_check_4 != "A3ANS61F3A656X" & AMT_ID_check_4 != "A1K8LPVDPWZSF9" & AMT_ID_check_4 != "AWHO5KT1KH28P" & AMT_ID_check_4 != "A2M6NAML0AGAJZ" & AMT_ID_check_4 != "A2OWM5OSE4SCFS" & AMT_ID_check_4 != "A39VB8OXHQZ6ZW" & AMT_ID_check_4 != "A1SGW0LMP12O59" &  AMT_ID_check_4 != "A3QN5EE1VSSJFS" & AMT_ID_check_4 != "A3OG21UO1AWTR7" & AMT_ID_check_4 != "A333RHGFT13OQM" & AMT_ID_check_4 != "A2RCT46ET5RNQN" & AMT_ID_check_4 != "A2ZLJQWCM8KU36" & AMT_ID_check_4 != "AE2U85I1TQ1E" & AMT_ID_check_4 != "A2TNZ157R0KWAC" & AMT_ID_check_4 != "COPIEDAXTUNPWPKSGPE" & AMT_ID_check_4 != "A1KXG3R48T74R3"  & AMT_ID_check_4 != "A2DIPD0N2YL9ST"  & AMT_ID_check_4 != "A36FVHZ2BEPYNM" & AMT_ID_check_4 != "AX6SVQJPPRLLJ" & AMT_ID_check_4 != "A28DMXUJCMX6SC" & AMT_ID_check_4 != "A3MNWO15YNEZNB")
-
+mkeps_grade$Duration..in.seconds. = NULL
+mkeps_grade$minutes = NULL
 write.csv(mkeps_grade, "mkeps_grade.csv", row.names = FALSE)
 dim(mkeps_grade)
+
 mkeps_grade
+mkeps_grade_all_10_30_20 = mkeps_grade
+write.csv(mkeps_grade_all_10_30_20, "mkeps_grade_all_10_30_20.csv", row.names = FALSE)
+36+37+37
+mkeps_grade_matt_sara_10_30_20 = mkeps_grade[1:36,]
+write.csv(mkeps_grade_matt_sara_10_30_20, "mkeps_grade_matt_sara_10_30_20.csv", row.names = FALSE)
+mkeps_grade_matt_elaina_10_30_20 = mkeps_grade[37:73,]
+write.csv(mkeps_grade_matt_elaina_10_30_20, "mkeps_grade_matt_elaina_10_30_20.csv", row.names = FALSE)
+mkeps_grade_sara_elaina_10_30_20 = mkeps_grade[74:110,]
+write.csv(mkeps_grade_sara_elaina_10_30_20, "mkeps_grade_sara_elaina_10_30_20.csv", row.names = FALSE)
+
+
+
 ```
 Now upload the graded data and link back
 ```{r}
