@@ -8,11 +8,11 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 Load up AMT data
 ```{r}
-setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/mkeps_pilot")
-mkeps = read.csv("mkeps_10_30_20.csv", header = TRUE, na.strings = c("", " "))
+#setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/mkeps_pilot")
+setwd("/Volumes/GoogleDrive/My Drive/Diss/Results/mkeps_pilot")
+mkeps = read.csv("mkeps_10_31_20.csv", header = TRUE, na.strings = c("", " "))
 head(mkeps)
 library(lubridate)
-mkeps
 mkeps =  mkeps[-c(1,2),] 
 start_date = list()
 
@@ -43,13 +43,10 @@ write.csv(mkeps_payment, "mkeps_payment.csv", row.names = FALSE)
 mkeps_payment
 
 ```
-Now just MKEPS for getting data for grading
+Clean data for grading
 ```{r}
 mkeps$Q_RelevantIDFraudScore = as.numeric(mkeps$Q_RelevantIDFraudScore)
 mkeps_grade = mkeps
-#mkeps_grade  =subset(mkeps, Q_RelevantIDFraudScore < 80)
-### 
-#mkeps_grade = mkeps_grade[-c(4:5),]
 ### Just subset their AMT ID and mkeps questions for merging later
 mkeps_grade = mkeps_grade[,c(6, 32:46, 55)]
 ## Get time to help you identify low quality repsonses
@@ -66,11 +63,16 @@ mkeps_grade$Duration..in.seconds. = NULL
 mkeps_grade$minutes = NULL
 write.csv(mkeps_grade, "mkeps_grade.csv", row.names = FALSE)
 dim(mkeps_grade)
+```
+
+
+Now just MKEPS for getting data for grading
+```{r}
 
 mkeps_grade
 mkeps_grade_all_10_30_20 = mkeps_grade
 write.csv(mkeps_grade_all_10_30_20, "mkeps_grade_all_10_30_20.csv", row.names = FALSE)
-36+37+37
+
 mkeps_grade_matt_sara_10_30_20 = mkeps_grade[1:36,]
 write.csv(mkeps_grade_matt_sara_10_30_20, "mkeps_grade_matt_sara_10_30_20.csv", row.names = FALSE)
 mkeps_grade_matt_elaina_10_30_20 = mkeps_grade[37:73,]
