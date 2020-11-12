@@ -11,8 +11,8 @@ Clean the data
 1. Clean the date completed
 ```{r}
 library(prettyR)
-#setwd("C:/Users/Matthew.Hanauer/Desktop/Diss")
-setwd("/Volumes/GoogleDrive/My Drive/Diss/Results/targeted_needs_survey")
+setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/targeted_needs_survey")
+#setwd("/Volumes/GoogleDrive/My Drive/Diss/Results/targeted_needs_survey")
 data_needs = read.csv("CRINeedsAssessment_DATA_2020-10-15_1653.csv", header  = TRUE)
 ### Remove me, Taylor, Nathan, Jennifer, Bre, and Joan before we count for percentage complete
 data_needs$keep = ifelse(data_needs$name == "Matt", 0, ifelse(data_needs$email == "Bre.Banks@centerstone.org", 0, ifelse(data_needs$email == "Joan.Sykora@centerstone.org", 0, ifelse(data_needs$email == "Nathan.Nehrt@centerstone.org", 0, ifelse(data_needs$email == "Taylor.Moore@centerstone.org", 0, ifelse(data_needs$email == "Jennifer.Lockman@centerstone.org", 0, 1))))))
@@ -36,7 +36,6 @@ n_complete = dim(dat_needs)[1]
 percent_complete = round(n_complete / n_total, 2)
 n_results = cbind(n_total, n_complete, percent_complete)
 n_results
-
 ```
 
 Get a count and percentage of pss 
