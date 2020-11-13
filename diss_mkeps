@@ -8,8 +8,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 Load up AMT data
 ```{r}
-#setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/mkeps_pilot")
-setwd("/Volumes/GoogleDrive/My Drive/Diss/Results/mkeps_pilot")
+setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/mkeps_pilot")
+#setwd("/Volumes/GoogleDrive/My Drive/Diss/Results/mkeps_pilot")
 mkeps = read.csv("mkeps_10_31_20.csv", header = TRUE, na.strings = c("", " "))
 head(mkeps)
 library(lubridate)
@@ -94,6 +94,31 @@ mkeps_grade_example_10_21_20 = mkeps_grade_example_10_21_20[c(2,5, 8, 11, 14, 17
 mkeps_graded_10_21_20 = merge(mkeps_grade_example_10_21_20, mkeps, by = "AMT_ID_check_4")
 dim(mkeps_graded_10_21_20)[1] == dim(mkeps_grade)[1]
 ```
+Get participant characteristics 
+```{r}
+mkeps_grade
+mkeps_demos = merge(mkeps, mkeps_grade, by = "AMT_ID_check_4", all.y = TRUE)
+dim(mkeps_grade)[1] == dim(mkeps_grade)[1]
+mkeps_demos = mkeps_demos[c("Duration..in.seconds.", "age", "edu", "english", "gender", "Q42", "race", "evaluation", "research", "AMT_ID_check_4")] 
 
+names(mkeps_demos)[1] = "minutes"
+mkeps_demos$minutes  = round(as.numeric(mkeps_demos$minutes) / 60)
+names(mkeps_demos)[6] = "hispanic"
+####
+library(prettyR)
+mkeps_demos$age = as.numeric(mkeps_demos$age)
+mkeps_demos_results =  prettyR::describe(mkeps_demos[-c(10)])
+mkeps_demos_results_num =  mkeps_demos_results$Numeric
+mkeps_demos_results_num = t(data.frame(mkeps_demos_results_num))
+mkeps_demos_results_num = mkeps_demos_results_num[,c(1,4)]
+mkeps_demos_results_num
+write.csv(mkeps_demos_results_num, "mkeps_demos_results_num.csv")
+mkeps_demos_results_bin =  mkeps_demos_results$Factor
+mkeps_demos_results_bin = t(data.frame(mkeps_demos_results_bin))
+mkeps_demos_results_bin = round(mkeps_demos_results_bin, 2)
+write.csv(mkeps_demos_results_bin, "mkeps_demos_results_bin.csv")
+range(mkeps_demos$age)
+range(mkeps_demos$minutes)
+```
 
 
