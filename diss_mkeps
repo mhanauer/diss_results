@@ -120,5 +120,30 @@ write.csv(mkeps_demos_results_bin, "mkeps_demos_results_bin.csv")
 range(mkeps_demos$age)
 range(mkeps_demos$minutes)
 ```
+Evaluate differences
+```{r}
+setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/mkeps_main/graded")
+sara_elaina = read.csv("sara_elaina.csv", header = TRUE)
+### Werid x variable remove
+sara_elaina$X = NULL
+elaina_sara = read.csv("elaina_sara.csv", header = TRUE)
+elaina_sara_score =  elaina_sara[c(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46)]
+sara_elaina_score = sara_elaina[c(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46)]
+### Because of errors just shorten
+elaina_sara_score = elaina_sara_score[1:19,]
+elaina_sara_score[1:18,]
+elaina_sara_score[,1:15] = apply(elaina_sara_score[,1:15], 2, as.numeric)
+sara_elaina_score = sara_elaina_score[1:18,]
+
+sara_elaina_score[,1:15] - elaina_sara_score[,1:15]
+
+length(sara_elaina_score)
+out_list = list()
+for(i in 1:15){
+  out_list[[i]] = elaina_sara_score[[i]] - sara_elaina_score[[i]]
+}
+out_list
+
+```
 
 
