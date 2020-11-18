@@ -130,19 +130,14 @@ elaina_sara = read.csv("elaina_sara.csv", header = TRUE)
 elaina_sara_score =  elaina_sara[c(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46)]
 sara_elaina_score = sara_elaina[c(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46)]
 ### Because of errors just shorten
-elaina_sara_score = elaina_sara_score[1:19,]
+elaina_sara_score = elaina_sara_score[1:18,]
 elaina_sara_score[1:18,]
 elaina_sara_score[,1:15] = apply(elaina_sara_score[,1:15], 2, as.numeric)
 sara_elaina_score = sara_elaina_score[1:18,]
 
-sara_elaina_score[,1:15] - elaina_sara_score[,1:15]
-
-length(sara_elaina_score)
-out_list = list()
-for(i in 1:15){
-  out_list[[i]] = elaina_sara_score[[i]] - sara_elaina_score[[i]]
-}
-out_list
+score_diff_sara_elaina = sara_elaina_score[,1:15] - elaina_sara_score[,1:15]
+write.csv(score_diff_sara_elaina, "score_diff_sara_elaina.csv", row.names = FALSE)
+### Identify the rows 
 
 ```
 
