@@ -120,7 +120,7 @@ write.csv(mkeps_demos_results_bin, "mkeps_demos_results_bin.csv")
 range(mkeps_demos$age)
 range(mkeps_demos$minutes)
 ```
-Evaluate differences
+Evaluate differences Sara and Elaina
 ```{r}
 setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/mkeps_main/graded")
 sara_elaina = read.csv("sara_elaina.csv", header = TRUE)
@@ -131,13 +131,30 @@ elaina_sara_score =  elaina_sara[c(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 3
 sara_elaina_score = sara_elaina[c(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46)]
 ### Because of errors just shorten
 elaina_sara_score = elaina_sara_score[1:18,]
-elaina_sara_score[1:18,]
 elaina_sara_score[,1:15] = apply(elaina_sara_score[,1:15], 2, as.numeric)
 sara_elaina_score = sara_elaina_score[1:18,]
 
 score_diff_sara_elaina = sara_elaina_score[,1:15] - elaina_sara_score[,1:15]
 write.csv(score_diff_sara_elaina, "score_diff_sara_elaina.csv", row.names = FALSE)
 ### Identify the rows 
+
+```
+Evaluate differences Elaina and Matt
+```{r}
+setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/mkeps_main/graded")
+elaina_matt = read.csv("elaina_matt.csv", header = TRUE)
+matt_elaina = read.csv("matt_elaina.csv", header = TRUE)
+library(dplyr)
+elaina_matt_score = elaina_matt %>%
+  select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46) %>%
+  slice(1:20)  
+
+matt_elaina_score = matt_elaina %>%
+  select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46) %>%
+  slice(1:20) 
+
+score_diff_elaina_matt = elaina_matt_score[,1:15] - matt_elaina_score[,1:15]
+write.csv(score_diff_elaina_matt, "score_diff_elaina_matt.csv", row.names = FALSE)
 
 ```
 
