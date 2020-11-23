@@ -10,8 +10,8 @@ Load data and library
 ```{r}
 library(dplyr)
 library(prettyR)
-#setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/tceps")
-setwd("/Volumes/GoogleDrive/My Drive/Diss/Results/tceps")
+setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/tceps")
+#setwd("/Volumes/GoogleDrive/My Drive/Diss/Results/tceps")
 tceps_demos = read.csv("MKEPSPsychoPreInform_DATA_2020-11-23_0619.csv", header = TRUE)
 ```
 Data cleaning
@@ -40,9 +40,9 @@ tceps_demos_clean
 Participant characteristics
 ```{r}
 library(tableone)
-N = dim(tceps_demos_clean)[1]
 tab1 =  CreateTableOne(data = tceps_demos_clean[-c(1)])
 tab1 = print(tab1, showAllLevels = TRUE)
+tab1
 write.csv(tab1, file = "tab1.csv")
 ```
 
