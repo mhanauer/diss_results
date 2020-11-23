@@ -10,7 +10,8 @@ Load data and library
 ```{r}
 library(dplyr)
 library(prettyR)
-setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/tceps")
+#setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/tceps")
+setwd("/Volumes/GoogleDrive/My Drive/Diss/Results/tceps")
 tceps_demos = read.csv("MKEPSPsychoPreInform_DATA_2020-11-23_0619.csv", header = TRUE)
 ```
 Data cleaning
@@ -34,14 +35,15 @@ tceps_demos_clean = tceps_demos %>%
   mutate(edu = case_when(edu == "4"~ "Bachelors", 
           edu == "5" ~ "Masters",
           edu == "7" ~  "Doctoral degree (e.g. PhD)"))
-
+tceps_demos_clean
 ```
 Participant characteristics
 ```{r}
-install.packages("tableone")
+library(tableone)
 N = dim(tceps_demos_clean)[1]
-library(psych)
-psych::describe(tceps_demos_clean)
+tab1 =  CreateTableOne(data = tceps_demos_clean[-c(1)])
+tab1 = print(tab1, showAllLevels = TRUE)
+write.csv(tab1, file = "tab1.csv")
 ```
 
 
