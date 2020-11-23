@@ -1,0 +1,58 @@
+---
+title: "Test"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Load data and library
+```{r}
+library(dplyr)
+library(prettyR)
+setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/tceps")
+tceps_demos = read.csv("MKEPSPsychoPreInform_DATA_2020-11-23_0619.csv", header = TRUE)
+```
+Data cleaning
+```{r}
+tceps_demos_clean = tceps_demos %>%
+  filter(consent_signed == 1) %>%
+  filter(mkeps_pre_timestamp != "[not completed]") %>%
+  dplyr::select(record_id, age, race, gender, edu, program_evaluation_exp, matt_time_spent, time_at_cri, att_1, att_2, att_3, att_4) %>%
+  rowwise() %>%
+    mutate(att_total = sum(c_across(c(att_1:att_4)))) %>%
+  select(-c(att_1:att_4)) %>%
+  #Change race to 1 versus all others
+  mutate(race_white = if_else(race == 1, "White", "Non-white"),
+         gender_female = if_else(gender == 2, "Female", "Non-female"),
+         program_eval_2_or_less = if_else(program_evaluation_exp <= 4, "<= 2 years", "> 2 years"), 
+         matt_time_spent_none = if_else(matt_time_spent == 1, "None","> None"),
+        time_at_cri_2_or_less = if_else(time_at_cri <= 4, "<= 2 years", "> 2 years")) %>%
+  mutate_at(.vars = c("race", "gender", "edu", "program_evaluation_exp", "matt_time_spent", "time_at_cri"), .funs = as.factor) %>%
+  #Edu = 4, Bachelor's degree | 5, Master's degree  7, Doctoral degree (e.g. PhD)
+  select(-c(race, gender, program_evaluation_exp, matt_time_spent, time_at_cri)) %>%
+  mutate(edu = case_when(edu == "4"~ "Bachelors", 
+          edu == "5" ~ "Masters",
+          edu == "7" ~  "Doctoral degree (e.g. PhD)"))
+
+```
+Participant characteristics
+```{r}
+install.packages("tableone")
+N = dim(tceps_demos_clean)[1]
+library(psych)
+psych::describe(tceps_demos_clean)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
