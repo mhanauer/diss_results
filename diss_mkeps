@@ -122,40 +122,51 @@ range(mkeps_demos$minutes)
 ```
 Evaluate differences Sara and Elaina
 ```{r}
-setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/mkeps_main/graded")
+setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/mkeps_main/graded/scored")
 sara_elaina = read.csv("sara_elaina.csv", header = TRUE)
+elaina_sara = read.csv("elaina_sara.csv", header = TRUE)
 ### Werid x variable remove
 sara_elaina$X = NULL
-elaina_sara = read.csv("elaina_sara.csv", header = TRUE)
 elaina_sara_score =  elaina_sara[c(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46)]
 sara_elaina_score = sara_elaina[c(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46)]
-### Because of errors just shorten
-elaina_sara_score = elaina_sara_score[1:18,]
-elaina_sara_score[,1:15] = apply(elaina_sara_score[,1:15], 2, as.numeric)
-sara_elaina_score = sara_elaina_score[1:18,]
 
-score_diff_sara_elaina = sara_elaina_score[,1:15] - elaina_sara_score[,1:15]
+score_diff_sara_elaina = sara_elaina_score[1:15] - elaina_sara_score[1:15]
 write.csv(score_diff_sara_elaina, "score_diff_sara_elaina.csv", row.names = FALSE)
 ### Identify the rows 
 
 ```
 Evaluate differences Elaina and Matt
 ```{r}
-setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/mkeps_main/graded")
+setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/mkeps_main/graded/scored")
 elaina_matt = read.csv("elaina_matt.csv", header = TRUE)
 matt_elaina = read.csv("matt_elaina.csv", header = TRUE)
 library(dplyr)
 elaina_matt_score = elaina_matt %>%
-  select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46) %>%
-  slice(1:20)  
+  select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46) 
 
 matt_elaina_score = matt_elaina %>%
-  select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46) %>%
-  slice(1:20) 
+  select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46) 
 
 score_diff_elaina_matt = elaina_matt_score[,1:15] - matt_elaina_score[,1:15]
+sum(is.na(score_diff_elaina_matt))
 write.csv(score_diff_elaina_matt, "score_diff_elaina_matt.csv", row.names = FALSE)
 
 ```
+Evaluate differences Sara and matt
+```{r}
+setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/mkeps_main/graded/scored")
+sara_matt = read.csv("sara_matt.csv", header = TRUE)
+matt_sara = read.csv("matt_sara.csv", header = TRUE)
+library(dplyr)
+sara_matt_score = sara_matt %>%
+  select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46) 
 
+matt_sara_score = matt_sara %>%
+  select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46) 
+
+score_diff_sara_matt = sara_matt_score[,1:15] - matt_sara_score[,1:15]
+sum(is.na(score_diff_sara_matt))
+write.csv(score_diff_sara_matt, "score_diff_sara_matt.csv", row.names = FALSE)
+
+```
 
