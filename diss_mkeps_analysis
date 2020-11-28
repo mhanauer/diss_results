@@ -1,1 +1,41 @@
+---
+title: "Test"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Load up data and library for MKEPS analysis
+```{r}
+library(dplyr)
+setwd("/Volumes/GoogleDrive/My Drive/Diss/Results/mkeps_main/graded")
+elaina_matt_rescore = read.csv("elaina_matt_rescore.csv", header = TRUE)
+elaina_sara_rescore = read.csv("elaina_sara_rescore.csv", header = TRUE)
+matt_elaina_rescore = read.csv("matt_elaina_rescore.csv", header = TRUE)
+sara_elaina_rescore = read.csv("sara_elaina_rescore.csv", header = TRUE)
+### Just grab the scores
+#[c(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46)]
+## Add 46 back if you need the ID
+elaina_matt_rescore = elaina_matt_rescore %>%
+    dplyr::select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44)
+elaina_matt_rescore
+
+elaina_sara_rescore = elaina_sara_rescore %>%
+    dplyr::select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44)
+elaina_sara_rescore
+
+matt_elaina_rescore = matt_elaina_rescore %>%
+    dplyr::select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44)
+matt_elaina_rescore
+
+
+
+sara_elaina_rescore = sara_elaina_rescore %>%
+     dplyr::select(-c(X)) %>%
+    dplyr::select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44)
+sara_elaina_rescore
+
+```
+
 
