@@ -104,6 +104,13 @@ mkeps_data
 ```
 Ok try parellel test
 ```{r}
+par_out = fa.parallel(mkeps_data[1:15], fa = "fa")
+par_out
 
+map_out =  vss(mkeps_data[1:15], n = 3)
+map_out
+
+efa_out = fa(mkeps_data[1:15], nfactors=1, rotate="varimax")
+efa_out
 ```
 
