@@ -9,33 +9,101 @@ knitr::opts_chunk$set(echo = TRUE)
 Load up data and library for MKEPS analysis
 ```{r}
 library(dplyr)
+library(psych)
 setwd("/Volumes/GoogleDrive/My Drive/Diss/Results/mkeps_main/graded")
 elaina_matt_rescore = read.csv("elaina_matt_rescore.csv", header = TRUE)
 elaina_sara_rescore = read.csv("elaina_sara_rescore.csv", header = TRUE)
 matt_elaina_rescore = read.csv("matt_elaina_rescore.csv", header = TRUE)
 sara_elaina_rescore = read.csv("sara_elaina_rescore.csv", header = TRUE)
+sara_matt_rescore = read.csv("sara_matt_rescore.csv", header = TRUE)
+matt_sara_rescore = read.csv("matt_sara_rescore.csv", header = TRUE)
 ### Just grab the scores
 #[c(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46)]
 ## Add 46 back if you need the ID
-elaina_matt_rescore = elaina_matt_rescore %>%
-    dplyr::select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44)
-elaina_matt_rescore
+elaina_matt_rescore_clean = elaina_matt_rescore %>%
+    dplyr::select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46) %>%
+    rowwise() %>%
+        mutate(mkeps_total_elaina_matt = sum(c_across(1:15)))
+elaina_matt_rescore_clean
 
-elaina_sara_rescore = elaina_sara_rescore %>%
-    dplyr::select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44)
+elaina_sara_rescore_clean = elaina_sara_rescore %>%
+    dplyr::select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46) %>%
+    rowwise() %>%
+        mutate(mkeps_total_elaina_sara = sum(c_across(1:15)))
 elaina_sara_rescore
 
-matt_elaina_rescore = matt_elaina_rescore %>%
-    dplyr::select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44)
+matt_elaina_rescore_clean = matt_elaina_rescore %>%
+    dplyr::select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46) %>%
+    rowwise() %>%
+        mutate(mkeps_total_matt_elaina = sum(c_across(1:15)))
 matt_elaina_rescore
 
-
-
-sara_elaina_rescore = sara_elaina_rescore %>%
+sara_elaina_rescore_clean = sara_elaina_rescore %>%
      dplyr::select(-c(X)) %>%
-    dplyr::select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44)
-sara_elaina_rescore
+    dplyr::select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46) %>%
+    rowwise() %>%
+        mutate(mkeps_total_sara_elaina = sum(c_across(1:15)))
+sara_elaina_rescore_clean
+
+sara_matt_rescore_clean = sara_matt_rescore %>%
+    dplyr::select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46) %>%
+    rowwise() %>%
+        mutate(mkeps_total_sara_matt = sum(c_across(1:15)))
+sara_matt_rescore_clean
+
+matt_sara_rescore_clean = matt_sara_rescore %>%
+    dplyr::select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46) %>%
+    rowwise() %>%
+        mutate(mkeps_total_matt_sara = sum(c_across(1:15)))
+matt_sara_rescore_clean
 
 ```
+Create ICC data sets 
+elaina_matt_rescore_clean
+elaina_sara_rescore_clean
+matt_elaina_rescore_clean
+sara_elaina_rescore_clean
+sara_matt_rescore_clean
+matt_sara_rescore_clean
+```{r}
+icc_dat_matt_elaina = data.frame(mkeps_total_elaina_matt = elaina_matt_rescore_clean$mkeps_total_elaina_matt, mkeps_total_matt_elaina = matt_elaina_rescore_clean$mkeps_total_matt_elaina)
 
+icc_dat_sara_elaina = data.frame( mkeps_total_sara_elaina = sara_elaina_rescore_clean$mkeps_total_sara_elaina, mkeps_total_elaina_sara = elaina_sara_rescore_clean$mkeps_total_elaina_sara)
+
+icc_dat_matt_sara = data.frame(mkeps_total_matt_sara = matt_sara_rescore_clean$mkeps_total_matt_sara, mkeps_total_sara_matt = sara_matt_rescore_clean$mkeps_total_sara_matt)
+
+```
+Now try ICC
+```{r}
+ICC(icc_dat_matt_elaina)
+ICC(icc_dat_sara_elaina)
+ICC(icc_dat_matt_sara)
+
+```
+Create sum scores of items for data sets
+Sum scores then stack each other
+
+elaina_matt_rescore_clean
+matt_elaina_rescore_clean
+
+elaina_sara_rescore_clean
+sara_elaina_rescore_clean
+
+sara_matt_rescore_clean
+matt_sara_rescore_clean
+```{r}
+matt_elaina_sum = cbind(elaina_matt_rescore_clean[1:15] + matt_elaina_rescore_clean[1:15], AMT_ID_check_4 = matt_elaina_rescore_clean$AMT_ID_check_4)
+matt_elaina_sum
+
+elaina_sara_sum = cbind(elaina_sara_rescore_clean[1:15] + sara_elaina_rescore_clean[1:15], AMT_ID_check_4 = sara_elaina_rescore_clean$AMT_ID_check_4)
+
+sara_matt_sum = cbind(sara_matt_rescore_clean[1:15] + matt_sara_rescore_clean[1:15], AMT_ID_check_4 = matt_sara_rescore_clean$AMT_ID_check_4)
+
+mkeps_data = rbind(matt_elaina_sum, elaina_sara_sum, sara_matt_sum)
+mkeps_data
+```
+Ok try parellel test
+```{r}
+
+```
 
