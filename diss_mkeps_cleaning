@@ -28,27 +28,17 @@ mkeps$StartDate
 ### Only include those from October and after, because that is when you started the study
 mkeps = subset(mkeps, StartDate >= "2020-10-26")
 dim(mkeps)
-
 mkeps = mkeps[!is.na(mkeps$AMT_ID_5),]
-
+### Create an ID 
+mkeps$id = 1:dim(mkeps)[1]
 ```
 
-Now just subset for payment
-```{r}
-mkeps$Q_RelevantIDFraudScore = as.numeric(mkeps$Q_RelevantIDFraudScore)
-mkeps_payment = data.frame(Q_RelevantIDFraudScore = mkeps$Q_RelevantIDFraudScore,AMT_ID_5 =  mkeps$AMT_ID_5)
-write.csv(mkeps_payment, "mkeps_payment.csv", row.names = FALSE)
-## Keep the first time they responded by making it less than the threshold of 80
-
-mkeps_payment
-
-```
 Clean data for grading
 ```{r}
 mkeps$Q_RelevantIDFraudScore = as.numeric(mkeps$Q_RelevantIDFraudScore)
 mkeps_grade = mkeps
 ### Just subset their AMT ID and mkeps questions for merging later
-mkeps_grade = mkeps_grade[,c(6, 32:46, 55)]
+mkeps_grade = mkeps_grade[,c(6, 32:46, 55, 56)]
 ## Get time to help you identify low quality repsonses
 mkeps_grade$Duration..in.seconds. = as.numeric(mkeps_grade$Duration..in.seconds.)
 mkeps_grade$minutes = mkeps_grade$Duration..in.seconds. / 60
@@ -96,8 +86,37 @@ mkeps_grade_sara_elaina_11_29_20 = mkeps_grade[131:140,]
 write.csv(mkeps_grade_sara_elaina_11_29_20, "mkeps_grade_sara_elaina_11_29_20.csv", row.names = FALSE)
 
 ```
-Get participant characterstics for study two 
+Get participant characteristics for study two 
 ```{r}
+### subset for the first 140 and grab just the ids to match the original data with the cleaned
+mkeps_grade_part = mkeps_grade %>%
+  slice(1:140) %>%
+  dplyr::select(id)
+
+### Limit original MKEPS to just the variables you want
+mkeps_part = mkeps %>%
+ dplyr::select(Duration..in.seconds.,age, edu, race, gender, evaluation, research, id) %>%
+  rename(minutes = Duration..in.seconds.) %>%
+  mutate(minutes = as.numeric(minutes)) %>%
+  mutate(minutes = minutes / 60) %>%
+  mutate(minutes = if_else(minutes > 200, -9, minutes)) %>%
+  mutate(minutes = na_if(minutes, -9)) %>%
+  mutate(age = as.numeric(age)) %>%
+  mutate(minutes = round(minutes)) %>%
+  # Recode education and race to anything less than 5%
+
+mkeps_part_all = merge(mkeps_grade_part, mkeps_part, by = "id")
+### Make minutes with z-score greater than four na
+mkeps_part_all
+
+
+```
+Now create Table 1 for MKEPS
+```{r}
+library(tableone)
+tab1_mkeps =  CreateTableOne(data = mkeps_part_all[2:8])
+tab1_mkeps = print(tab1_mkeps, showAllLevels = TRUE)
+write.csv(tab1_mkeps, file = "tab1_mkeps.csv")
 
 ```
 
