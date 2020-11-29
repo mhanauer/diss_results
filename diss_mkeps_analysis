@@ -30,13 +30,13 @@ elaina_sara_rescore_clean = elaina_sara_rescore %>%
     dplyr::select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46) %>%
     rowwise() %>%
         mutate(mkeps_total_elaina_sara = sum(c_across(1:15)))
-elaina_sara_rescore
+elaina_sara_rescore_clean
 
 matt_elaina_rescore_clean = matt_elaina_rescore %>%
     dplyr::select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46) %>%
     rowwise() %>%
         mutate(mkeps_total_matt_elaina = sum(c_across(1:15)))
-matt_elaina_rescore
+matt_elaina_rescore_clean
 
 sara_elaina_rescore_clean = sara_elaina_rescore %>%
      dplyr::select(-c(X)) %>%
@@ -95,15 +95,18 @@ matt_sara_rescore_clean
 matt_elaina_sum = cbind(elaina_matt_rescore_clean[1:15] + matt_elaina_rescore_clean[1:15], AMT_ID_check_4 = matt_elaina_rescore_clean$AMT_ID_check_4)
 matt_elaina_sum
 
-elaina_sara_sum = cbind(elaina_sara_rescore_clean[1:15] + sara_elaina_rescore_clean[1:15], AMT_ID_check_4 = sara_elaina_rescore_clean$AMT_ID_check_4)
+elaina_sara_sum = cbind(elaina_sara_rescore_clean[1:15] + sara_elaina_rescore_clean[1:15], AMT_ID_check_4 = elaina_sara_rescore_clean$AMT_ID_check_4)
 
-sara_matt_sum = cbind(sara_matt_rescore_clean[1:15] + matt_sara_rescore_clean[1:15], AMT_ID_check_4 = matt_sara_rescore_clean$AMT_ID_check_4)
+sara_matt_sum = cbind(sara_matt_rescore_clean[1:15] + matt_sara_rescore_clean[1:15], AMT_ID_check_4 = sara_matt_rescore_clean$AMT_ID_check_4)
 
 mkeps_data = rbind(matt_elaina_sum, elaina_sara_sum, sara_matt_sum)
 mkeps_data
 ```
-Ok try parellel test
+
+Ok try dimensionality and internal consistency
 ```{r}
+dim(mkeps_data[1:15])
+
 par_out = fa.parallel(mkeps_data[1:15], fa = "fa")
 par_out
 
@@ -112,5 +115,45 @@ map_out
 
 efa_out = fa(mkeps_data[1:15], nfactors=1, rotate="varimax")
 efa_out
-```
+fa.diagram(efa_out)
 
+alpha_out = alpha(mkeps_data[1:15])
+alpha_out
+```
+Try item analysis
+```{r}
+library(sjPlot)
+item_analysis = tab_itemscale(mkeps_data[1:15])
+
+sum(is.na(mkeps_data[1:15]))
+```
+Try removing item one 
+```{r}
+par_out = fa.parallel(mkeps_data[c(2:15)], fa = "fa")
+par_out
+
+map_out =  vss(mkeps_data[c(2:15)], n = 3, fm = 'mle')
+map_out
+
+efa_out = fa(mkeps_data[c(2:15)], nfactors=1, rotate="varimax")
+efa_out
+fa.diagram(efa_out)
+
+alpha_out = alpha(mkeps_data[c(2:15)])
+alpha_out
+```
+Try removing item one and seven
+```{r}
+par_out = fa.parallel(mkeps_data[c(2:6, 8:15)], fa = "fa")
+par_out
+
+map_out =  vss(mkeps_data[c(2:6, 8:15)], n = 3, fm = 'mle')
+map_out
+
+efa_out = fa(mkeps_data[c(2:6, 8:15)], nfactors=1, rotate="varimax")
+efa_out
+fa.diagram(efa_out)
+
+alpha_out = alpha(mkeps_data[c(2:6, 8:15)])
+alpha_out
+```
