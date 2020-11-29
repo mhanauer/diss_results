@@ -104,9 +104,20 @@ mkeps_part = mkeps %>%
   mutate(age = as.numeric(age)) %>%
   mutate(minutes = round(minutes)) %>%
   # Recode education and race to anything less than 5%
-
+  mutate(race = case_when(
+    race == "American Indian or Alaska Native" ~ "Another racial identity",
+    race == "Asian" ~ "Another racial identity",
+    race == "Multiracial" ~ "Another racial identity",
+    race == "Prefer not to respond" ~ "Another racial identity",
+    ### This says if not any of these options keep the current response
+    TRUE ~ as.character(race))) %>%
+  mutate(edu = case_when(
+    edu == "Doctoral degree (e.g. PhD)" ~ "Master's or greater",
+    edu == "Master's degree" ~ "Master's or greater",
+    edu == "Professional degree (e.g. MD)"  ~ "Master's or greater",
+    edu == "Bachelor's degree" ~ "Bachelor's degree",
+    TRUE ~ "Less than Bachelor's degree"))
 mkeps_part_all = merge(mkeps_grade_part, mkeps_part, by = "id")
-### Make minutes with z-score greater than four na
 mkeps_part_all
 
 
@@ -117,12 +128,8 @@ library(tableone)
 tab1_mkeps =  CreateTableOne(data = mkeps_part_all[2:8])
 tab1_mkeps = print(tab1_mkeps, showAllLevels = TRUE)
 write.csv(tab1_mkeps, file = "tab1_mkeps.csv")
-
 ```
-
-
-
-Evaluate differences Sara and Elaina
+Evaluate differences Sara and Elaina 
 ```{r}
 setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/mkeps_main/graded/scored")
 sara_elaina = read.csv("sara_elaina.csv", header = TRUE)
@@ -137,7 +144,7 @@ write.csv(score_diff_sara_elaina, "score_diff_sara_elaina.csv", row.names = FALS
 ### Identify the rows 
 
 ```
-Evaluate differences Elaina and Matt
+Evaluate differences Elaina and Matt 
 ```{r}
 setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/mkeps_main/graded/scored")
 elaina_matt = read.csv("elaina_matt.csv", header = TRUE)
