@@ -8,8 +8,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 Load up AMT data
 ```{r}
-#setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/mkeps_pilot")
-setwd("/Volumes/GoogleDrive/My Drive/Diss/Results/mkeps_pilot")
+setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/mkeps_pilot")
+#setwd("/Volumes/GoogleDrive/My Drive/Diss/Results/mkeps_pilot")
 mkeps = read.csv("mkeps_10_31_20.csv", header = TRUE, na.strings = c("", " "))
 head(mkeps)
 library(lubridate)
@@ -27,10 +27,17 @@ mkeps$StartDate
 
 ### Only include those from October and after, because that is when you started the study
 mkeps = subset(mkeps, StartDate >= "2020-10-26")
-dim(mkeps)
+
+### N for inital MKEPS responses
+n_inital_mkeps =  dim(mkeps)[1]
+
 mkeps = mkeps[!is.na(mkeps$AMT_ID_5),]
 ### Create an ID 
 mkeps$id = 1:dim(mkeps)[1]
+
+### N after removing those who were not eligible
+n_not_eligble_mkeps =  dim(mkeps)[1]
+
 ```
 
 Clean data for grading
@@ -53,6 +60,9 @@ mkeps_grade$Duration..in.seconds. = NULL
 mkeps_grade$minutes = NULL
 write.csv(mkeps_grade, "mkeps_grade.csv", row.names = FALSE)
 dim(mkeps_grade)
+
+n_remove_bad_responses = dim(mkeps_grade)[1]
+
 ```
 
 
@@ -176,6 +186,14 @@ matt_sara_score = matt_sara %>%
 score_diff_sara_matt = sara_matt_score[,1:15] - matt_sara_score[,1:15]
 sum(is.na(score_diff_sara_matt))
 write.csv(score_diff_sara_matt, "score_diff_sara_matt.csv", row.names = FALSE)
+
+```
+N's for flowchart
+```{r}
+n_inital_mkeps 
+n_not_eligble_mkeps
+n_remove_bad_responses
+
 
 ```
 
