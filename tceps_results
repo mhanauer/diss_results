@@ -45,7 +45,22 @@ tab1 = print(tab1, showAllLevels = TRUE)
 tab1
 write.csv(tab1, file = "tab1.csv")
 ```
+###################################
+TCEPS training results
+##################################
+```{r}
+### Get responses for grading
+setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/tceps/rating/pre/original")
+tceps_pre_mkeps = read.csv("MKEPSPsychoPre_DATA_2020-12-03_1223.csv", header = TRUE)
+tceps_pre_mkeps
 
+tceps_pre_mkeps_clean = tceps_pre_mkeps %>%
+  filter(mkeps_pre_complete == 2) %>%
+  select(c(record_id, mkeps_1:mkeps_15))
+tceps_pre_mkeps_clean
+write.csv(tceps_pre_mkeps_clean, "tceps_pre_mkeps_clean_12_3_20.csv", row.names = FALSE)
+```
+When figuring out the repeats, grab the record ID from the grades and then remove based on when they are different
 
 
 
