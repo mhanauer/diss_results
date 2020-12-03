@@ -105,9 +105,12 @@ write.csv(mkeps_data, "mkeps_data.csv", row.names = FALSE)
 ```
 Get item means and sds look for NAs
 ```{r}
+apply(mkeps_data[1:15], 2, range)
 
-
-
+tab1_mkeps_items =  CreateTableOne(data = mkeps_data[1:15])
+tab1_mkeps_items = print(tab1_mkeps_items, showAllLevels = TRUE)
+write.csv(tab1_mkeps_items, file = "tab1_mkeps_items.csv")
+sum(is.na(mkeps_data[1:15]))
 ```
 
 
@@ -125,15 +128,14 @@ efa_out = fa(mkeps_data[1:15], nfactors=1, rotate="varimax")
 efa_out
 fa.diagram(efa_out)
 
-alpha_out = alpha(mkeps_data[1:15])
+alpha_out = psych::alpha(mkeps_data[1:15])
 alpha_out
 ```
 Try item analysis
 ```{r}
 library(sjPlot)
 item_analysis = tab_itemscale(mkeps_data[1:15])
-
-sum(is.na(mkeps_data[1:15]))
+item_analysis
 ```
 Try removing item one 
 ```{r}
