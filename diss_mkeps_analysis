@@ -10,7 +10,8 @@ Load up data and library for MKEPS analysis
 ```{r}
 library(dplyr)
 library(psych)
-setwd("/Volumes/GoogleDrive/My Drive/Diss/Results/mkeps_main/graded")
+#setwd("/Volumes/GoogleDrive/My Drive/Diss/Results/mkeps_main/graded")
+setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/mkeps_main/graded")
 elaina_matt_rescore = read.csv("elaina_matt_rescore.csv", header = TRUE)
 elaina_sara_rescore = read.csv("elaina_sara_rescore.csv", header = TRUE)
 matt_elaina_rescore = read.csv("matt_elaina_rescore.csv", header = TRUE)
@@ -39,10 +40,9 @@ matt_elaina_rescore_clean = matt_elaina_rescore %>%
 matt_elaina_rescore_clean
 
 sara_elaina_rescore_clean = sara_elaina_rescore %>%
-     dplyr::select(-c(X)) %>%
-    dplyr::select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46) %>%
-    rowwise() %>%
-        mutate(mkeps_total_sara_elaina = sum(c_across(1:15)))
+  dplyr::select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46) %>%
+  rowwise() %>%
+  mutate(mkeps_total_sara_elaina = sum(c_across(1:15)))
 sara_elaina_rescore_clean
 
 sara_matt_rescore_clean = sara_matt_rescore %>%
@@ -101,7 +101,15 @@ sara_matt_sum = cbind(sara_matt_rescore_clean[1:15] + matt_sara_rescore_clean[1:
 
 mkeps_data = rbind(matt_elaina_sum, elaina_sara_sum, sara_matt_sum)
 mkeps_data
+write.csv(mkeps_data, "mkeps_data.csv", row.names = FALSE)
 ```
+Get item means and sds look for NAs
+```{r}
+
+
+
+```
+
 
 Ok try dimensionality and internal consistency
 ```{r}
