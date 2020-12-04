@@ -99,13 +99,14 @@ write.csv(mkeps_grade_sara_elaina_11_29_20, "mkeps_grade_sara_elaina_11_29_20.cs
 Get participant characteristics for study two 
 ```{r}
 ### subset for the first 140 and grab just the ids to match the original data with the cleaned
+library(dplyr)
 mkeps_grade_part = mkeps_grade %>%
   slice(1:140) %>%
   dplyr::select(id)
 
 ### Limit original MKEPS to just the variables you want
 mkeps_part = mkeps %>%
- dplyr::select(Duration..in.seconds.,age, edu, race, gender, evaluation, research, id) %>%
+ dplyr::select(Duration..in.seconds., Q42,age, edu, race, gender, evaluation, research, id) %>%
   rename(minutes = Duration..in.seconds.) %>%
   mutate(minutes = as.numeric(minutes)) %>%
   mutate(minutes = minutes / 60) %>%
@@ -135,7 +136,7 @@ mkeps_part_all
 Now create Table 1 for MKEPS
 ```{r}
 library(tableone)
-tab1_mkeps =  CreateTableOne(data = mkeps_part_all[2:8])
+tab1_mkeps =  CreateTableOne(data = mkeps_part_all[2:9])
 tab1_mkeps = print(tab1_mkeps, showAllLevels = TRUE)
 write.csv(tab1_mkeps, file = "tab1_mkeps.csv")
 ```
