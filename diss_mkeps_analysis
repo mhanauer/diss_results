@@ -124,8 +124,8 @@ par_out
 map_out =  vss(mkeps_data[1:15], n = 3)
 map_out
 
-efa_out = fa(mkeps_data[1:15], nfactors=1, rotate="varimax")
-efa_out
+efa_out_all = fa(mkeps_data[1:15], nfactors=1, rotate="varimax")
+efa_out_all
 fa.diagram(efa_out)
 
 alpha_out = psych::alpha(mkeps_data[1:15])
@@ -134,36 +134,30 @@ alpha_out
 Try item analysis
 ```{r}
 library(sjPlot)
-item_analysis = tab_itemscale(mkeps_data[1:15])
+item_analysis = tab_itemscale(mkeps_data[1:15], file = "item_analysis.csv")
 item_analysis
 ```
-Try removing item one 
+Try removing item two
 ```{r}
-par_out = fa.parallel(mkeps_data[c(2:15)], fa = "fa")
+par_out = fa.parallel(mkeps_data[c(1, 3:15)], fa = "fa")
 par_out
 
-map_out =  vss(mkeps_data[c(2:15)], n = 3, fm = 'mle')
+map_out =  vss(mkeps_data[c(1, 3:15)], n = 3, fm = 'mle')
 map_out
 
-efa_out = fa(mkeps_data[c(2:15)], nfactors=1, rotate="varimax")
-efa_out
+efa_out_d_i_2 = fa(mkeps_data[c(1, 3:15)], nfactors=1, rotate="varimax")
+efa_out_d_i_2
 fa.diagram(efa_out)
 
-alpha_out = alpha(mkeps_data[c(2:15)])
+alpha_out = alpha(mkeps_data[c(1, 3:15)])
 alpha_out
 ```
-Try removing item one and seven
+Comparing the models
 ```{r}
-par_out = fa.parallel(mkeps_data[c(2:6, 8:15)], fa = "fa")
-par_out
+library(lmtest)
+anova(efa_out_all, efa_out_d_i_2)
 
-map_out =  vss(mkeps_data[c(2:6, 8:15)], n = 3, fm = 'mle')
-map_out
-
-efa_out = fa(mkeps_data[c(2:6, 8:15)], nfactors=1, rotate="varimax")
-efa_out
-fa.diagram(efa_out)
-
-alpha_out = alpha(mkeps_data[c(2:6, 8:15)])
-alpha_out
 ```
+
+
+
