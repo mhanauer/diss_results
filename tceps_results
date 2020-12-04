@@ -13,12 +13,13 @@ library(prettyR)
 setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/tceps")
 #setwd("/Volumes/GoogleDrive/My Drive/Diss/Results/tceps")
 tceps_demos = read.csv("MKEPSPsychoPreInform_DATA_2020-11-23_0619.csv", header = TRUE)
+n_total = dim(tceps_demos)[1]
 ```
 Data cleaning
 ```{r}
 tceps_demos_clean = tceps_demos %>%
   filter(consent_signed == 1) %>%
-  filter(mkeps_pre_timestamp != "[not completed]") %>%
+  filter(mkeps_pre_complete == 2) %>%
   dplyr::select(record_id, age, race, gender, edu, program_evaluation_exp, matt_time_spent, time_at_cri, att_1, att_2, att_3, att_4) %>%
   rowwise() %>%
     mutate(att_total = sum(c_across(c(att_1:att_4)))) %>%
@@ -36,7 +37,32 @@ tceps_demos_clean = tceps_demos %>%
           edu == "5" ~ "Masters",
           edu == "7" ~  "Doctoral degree (e.g. PhD)"))
 tceps_demos_clean
+n_consent = dim(tceps_demos_clean)[1]
 ```
+Now link record IDs to find the people who completed the MKEPS
+```{r}
+setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/tceps")
+tceps_pre_dat = read.csv("MKEPSPsychoPost_DATA_2020-12-04_1221.csv", header = TRUE)
+tceps_pre_dat_clean = tceps_pre_dat %>%
+  filter(mkeps_pre_complete == 2) %>%
+  select(record_id)
+tceps_pre_dat_clean
+
+tceps_demos_clean = merge(tceps_demos_clean, tceps_pre_dat_clean, by = "record_id")
+n_complete_pre =  dim(tceps_demos_clean)[1]
+dim(tceps_demos_clean)
+```
+N's for flow
+```{r}
+n_total
+n_consent
+n_complete_pre
+
+n_tceps_results = data.frame(n_total, n_consent, n_complete_pre)
+```
+
+
+
 Participant characteristics
 ```{r}
 library(tableone)
