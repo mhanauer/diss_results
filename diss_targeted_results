@@ -23,18 +23,20 @@ sum(data_needs$email == "Bre.Banks@centerstone.org")
 dat_needs = data_needs
 library(lubridate)
 head(dat_needs)
+
+total_n = dim(dat_needs)[1]
 # Only include those who consented
 dat_needs = subset(dat_needs, consent_yes_no == "1")
+total_consented = dim(dat_needs)[1]
 # Only include those completed the survey
 dat_needs = subset(dat_needs, needs_assessment_timestamp != "[not completed]")
+total_completed = dim(dat_needs)[1]
 write.csv(dat_needs, "dat_needs.csv", row.names = FALSE)
 ```
 Get the percentage of people who completed the survey and n
 ```{r}
-n_total = dim(data_needs)[1]
-n_complete = dim(dat_needs)[1]
-percent_complete = round(n_complete / n_total, 2)
-n_results = cbind(n_total, n_complete, percent_complete)
+percent_complete = round(total_completed / total_n, 2)
+n_results = cbind(total_n, total_consented, total_completed, percent_complete)
 n_results
 ```
 
