@@ -6,61 +6,47 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-Load up AMT data
+Load up Pre-TCEPS MKEPS data
 ```{r}
 setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/tceps/rating/pre/rated")
-sara_tceps_mkeps = read.csv("tceps_pre_mkeps_sara.csv", header = TRUE, na.strings = c("", " "))
-
-head(sara_tceps_mkeps)
-
-
+sara_tceps_mkeps_pre = read.csv("tceps_pre_mkeps_sara.csv", header = TRUE, na.strings = c("", " "))
+elaina_tceps_mkeps_pre = read.csv("tceps_pre_mkeps_elaina.csv", header= TRUE, na.strings = c("", " "))
 ```
 Evaluate differences Sara and Elaina 
 ```{r}
-sara_tceps_mkeps_score =  sara_tceps_mkeps %>%
+sara_tceps_mkeps_pre_score =  sara_tceps_mkeps_pre %>%
   select(c(record_id, mkeps_1_score, mkeps_2_score, mkeps_3_score, mkeps_4_score, mkeps_5_score, mkeps_6_score, mkeps_7_score, mkeps_8_score, mkeps_9_score, mkeps_10_score, mkeps_11_score, mkeps_12_score, mkeps_13_score, mkeps_14_score, mkeps_15_score))
-sara_tceps_mkeps_score
-```
-Evaluate differences Elaina and Matt 
-```{r}
-setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/mkeps_main/graded/scored")
-elaina_matt = read.csv("elaina_matt.csv", header = TRUE)
-matt_elaina = read.csv("matt_elaina.csv", header = TRUE)
-library(dplyr)
-elaina_matt_score = elaina_matt %>%
-  select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46) 
+sara_tceps_mkeps_pre_score
 
-matt_elaina_score = matt_elaina %>%
-  select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46) 
+elaina_tceps_mkeps_pre_score =  elaina_tceps_mkeps_pre %>%
+  select(c(record_id, mkeps_1_score, mkeps_2_score, mkeps_3_score, mkeps_4_score, mkeps_5_score, mkeps_6_score, mkeps_7_score, mkeps_8_score, mkeps_9_score, mkeps_10_score, mkeps_11_score, mkeps_12_score, mkeps_13_score, mkeps_14_score, mkeps_15_score))
+elaina_tceps_mkeps_pre_score
 
-score_diff_elaina_matt = elaina_matt_score[,1:15] - matt_elaina_score[,1:15]
-sum(is.na(score_diff_elaina_matt))
-write.csv(score_diff_elaina_matt, "score_diff_elaina_matt.csv", row.names = FALSE)
+score_diff_elaina_sara_pre_mkeps = sara_tceps_mkeps_pre_score[,2:16] - elaina_tceps_mkeps_pre_score[,2:16]
+sum(is.na(score_diff_elaina_sara_pre_mkeps))
+write.csv(score_diff_elaina_sara_pre_mkeps, "score_diff_elaina_sara_pre_mkeps.csv", row.names = FALSE)
+
 
 ```
-Evaluate differences Sara and matt
+Now get total scores for pre mkeps
 ```{r}
-setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/mkeps_main/graded/scored")
-sara_matt = read.csv("sara_matt.csv", header = TRUE)
-matt_sara = read.csv("matt_sara.csv", header = TRUE)
-library(dplyr)
-sara_matt_score = sara_matt %>%
-  select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46) 
 
-matt_sara_score = matt_sara %>%
-  select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46) 
+setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/tceps/rating/pre/re_rated")
+re_score_sara_tceps_mkeps_pre = read.csv("re_score_tceps_pre_mkeps_sara.csv", header = TRUE, na.strings = c("", " "))
+re_score_elaina_tceps_mkeps_pre = read.csv("re_score_tceps_pre_mkeps_elaina.csv", header= TRUE, na.strings = c("", " "))
 
-score_diff_sara_matt = sara_matt_score[,1:15] - matt_sara_score[,1:15]
-sum(is.na(score_diff_sara_matt))
-write.csv(score_diff_sara_matt, "score_diff_sara_matt.csv", row.names = FALSE)
+re_score_sara_tceps_mkeps_pre_score =  re_score_sara_tceps_mkeps_pre %>%
+  select(c(record_id, mkeps_1_score, mkeps_2_score, mkeps_3_score, mkeps_4_score, mkeps_5_score, mkeps_6_score, mkeps_7_score, mkeps_8_score, mkeps_9_score, mkeps_10_score, mkeps_11_score, mkeps_12_score, mkeps_13_score, mkeps_14_score, mkeps_15_score))
+re_score_sara_tceps_mkeps_pre_score
 
-```
-N's for flowchart
-```{r}
-n_inital_mkeps 
-n_not_eligble_mkeps
-n_remove_bad_responses
+re_score_elaina_tceps_mkeps_pre_score =  re_score_elaina_tceps_mkeps_pre %>%
+  select(c(record_id, mkeps_1_score, mkeps_2_score, mkeps_3_score, mkeps_4_score, mkeps_5_score, mkeps_6_score, mkeps_7_score, mkeps_8_score, mkeps_9_score, mkeps_10_score, mkeps_11_score, mkeps_12_score, mkeps_13_score, mkeps_14_score, mkeps_15_score))
+re_score_elaina_tceps_mkeps_pre_score
 
+pre_tceps_mkeps  = re_score_sara_tceps_mkeps_pre_score[,2:16] + re_score_elaina_tceps_mkeps_pre_score[,2:16] 
+pre_tceps_mkeps$record_id = re_score_sara_tceps_mkeps_pre_score$record_id
+pre_tceps_mkeps$pre_tcep_mkeps_total = apply(re_score_sara_tceps_mkeps_pre_score[,2:16], 1, sum)
+pre_tceps_mkeps
 
 ```
 
