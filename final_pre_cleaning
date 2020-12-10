@@ -1,0 +1,56 @@
+---
+title: "Test"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Subset the people for completed the pre assessment
+```{r}
+setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/tceps/assessment_scheduling")
+ppre_complete_data_12_10_20 = read.csv("pre_complete_data_12_10_20.csv", header = TRUE)
+library(dplyr)
+ppre_complete_data_12_10_20_clean =  ppre_complete_data_12_10_20 %>%
+  select(ï..record_id, mkeps_pre_complete, name, email) %>%
+  filter(mkeps_pre_complete == 2)
+ppre_complete_data_12_10_20_clean
+write.csv(ppre_complete_data_12_10_20_clean, "ppre_complete_data_12_10_20_clean.csv.csv", row.names = FALSE)
+```
+Up load the pre training and then compare ids to the rating and get rating for elaina and sara
+```{r}
+setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/tceps/assessment_scheduling")
+ppre_complete_data_12_10_20 = read.csv("pre_complete_data_12_10_20.csv", header = TRUE)
+#record_id
+remain_pre_tceps_mkeps =  ppre_complete_data_12_10_20 %>%
+  rename(record_id = ï..record_id) %>%
+  filter(mkeps_pre_complete == 2) %>%
+  select(c(record_id, mkeps_1, mkeps_2, mkeps_3, mkeps_4, mkeps_5, mkeps_6, mkeps_7, mkeps_8, mkeps_9, mkeps_10, mkeps_11, mkeps_12, mkeps_13, mkeps_14, mkeps_15))
+remain_pre_tceps_mkeps
+write.csv(remain_pre_tceps_mkeps, "remain_pre_tceps_mkeps.csv", row.names = FALSE)
+#### Upload one of rerating scores
+final_pre_rescores %>%
+  filter(record_id == 13)
+
+setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/tceps/rating/pre/re_rated")
+re_score_tceps_pre_mkeps_sara = read.csv("re_score_tceps_pre_mkeps_sara.csv", header = TRUE, na.strings = c("", " "))
+re_score_tceps_pre_mkeps_sara = re_score_tceps_pre_mkeps_sara %>%
+  select(record_id)
+### Final rescores
+write.csv(re_score_tceps_pre_mkeps_sara, "re_score_tceps_pre_mkeps_sara.csv", row.names = FALSE)
+final_pre_rescores = merge(remain_pre_tceps_mkeps, re_score_tceps_pre_mkeps_sara, by = "record_id")
+final_pre_rescores
+
+```
+Now get just the ones that we still need to grade 
+```{r}
+### Keep the following scores based on remain_pre_tceps document which is the unique values between the original re_rate and the pre assessment from REDCap
+#### Upload one of rerating scores
+remain_pre_tceps_mkeps = remain_pre_tceps_mkeps %>%
+  filter(record_id == 13 |record_id == 30 |record_id == 36 |record_id == 39 |record_id == 41 |record_id == 48 |record_id == 70 |record_id == 102 |record_id == 104)
+
+write.csv(remain_pre_tceps_mkeps, "remain_pre_tceps_mkeps.csv", row.names = FALSE)
+```
+
+
+
