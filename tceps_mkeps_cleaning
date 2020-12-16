@@ -11,6 +11,16 @@ Load up Pre-TCEPS MKEPS data
 setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/tceps/rating/pre/rated")
 sara_tceps_mkeps_pre = read.csv("tceps_pre_mkeps_sara.csv", header = TRUE, na.strings = c("", " "))
 elaina_tceps_mkeps_pre = read.csv("tceps_pre_mkeps_elaina.csv", header= TRUE, na.strings = c("", " "))
+### Remove IDs 59 and 104
+library(dplyr)
+sara_tceps_mkeps_pre = sara_tceps_mkeps_pre %>%
+  filter(record_id != 59) %>%
+  filter(record_id != 104)
+
+elaina_tceps_mkeps_pre = elaina_tceps_mkeps_pre %>%
+  filter(record_id != 59) %>%
+  filter(record_id != 104)
+
 ```
 Evaluate differences Sara and Elaina 
 ```{r}
