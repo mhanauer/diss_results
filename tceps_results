@@ -63,28 +63,24 @@ pre_tceps_mkeps$pre_tcep_mkeps_total = apply(re_score_sara_tceps_mkeps_pre_score
 pre_tceps_mkeps = pre_tceps_mkeps %>%
   select(record_id, pre_tcep_mkeps_total)
 pre_tceps_mkeps
+n_complete_pre =  dim(pre_tceps_mkeps)[1]
+pre_tceps_mkeps
 ```
 
 Now link the two for testing for missingness
 Need to link with post TCEPS scores as well
 Need to keep all the original consented folks and what we can from the pre and post testing
 ```{r}
-tceps_demos_pre = merge(tceps_demos_clean, pre_tceps_mkeps, by = "record_id")
-n_complete_pre =  dim(tceps_demos_pre)[1]
-dim(tceps_demos_pre)
+library(MissMech)
+tceps_demos_pre = merge(tceps_demos_clean, pre_tceps_mkeps, by = "record_id", all.x = TRUE)
+
+TestMCARNormality(tceps_demos_pre[c(10)])
+
 ```
 Number of people who completed the post testing 
 ```{r}
-library(MissMech)
-TestMCARNormality(tceps_demos_pre[-c(1)])
-```
-Missing data test
-```{r}
 
 ```
-
-
-
 
 N's for flow
 ```{r}
@@ -93,6 +89,7 @@ n_consent
 n_complete_pre
 
 n_tceps_results = data.frame(n_total, n_consent, n_complete_pre)
+write.csv(n_tceps_results, "n_tceps_results.csv", row.names = FALSE)
 ```
 Data cleaning for post descriptives
 ```{r}
@@ -131,17 +128,21 @@ write.csv(tab1, file = "tab1.csv")
 ###################################
 TCEPS training results
 ##################################
+Check normality and get means sds for pre and post of attitudes and MKEPS
 ```{r}
-### Get responses for grading
-setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/tceps/rating/pre/original")
-tceps_pre_mkeps = read.csv("MKEPSPsychoPre_DATA_2020-12-03_1223.csv", header = TRUE)
-tceps_pre_mkeps
+tceps_pre = merge(tceps_demos_clean, pre_tceps_mkeps, by = "record_id", all.y = TRUE)
+tceps_demos_pre = tceps_demos_pre %>%
+  select(att_total, pre_tcep_mkeps_total)
+tceps_demos_pre
+mean_sd =  CreateTableOne(data = tceps_demos_pre)
+mean_sd
+#write.csv(mean_sd, file = "mean_sd.csv")
+par(mfrow = c(2,2))
+hist_pre_attitude = hist(tceps_demos_pre$att_total, main = "Histogram of Pre TCEPS Total Attitude Scores", xlab = "Pre TCEPS Total Attitude Scores")
+qqplot_pre_attitude = qqnorm(tceps_demos_pre$att_total, main = "Normal Q-Q Plot of Pre TCEPS Total Attitude Scores")
+hist_pre_mkeps = hist(tceps_demos_pre$pre_tcep_mkeps_total, main = "Histogram of Pre TCEPS Total MKEPS Scores", xlab = "Pre TCEPS Total Attitude Scores")
+qqplot_pre_mkeps = qqnorm(tceps_demos_pre$pre_tcep_mkeps_total, main = "Normal Q-Q Plot of Pre TCEPS Total MKEPS Scores")
 
-tceps_pre_mkeps_clean = tceps_pre_mkeps %>%
-  filter(mkeps_pre_complete == 2) %>%
-  select(c(record_id, mkeps_1:mkeps_15))
-tceps_pre_mkeps_clean
-write.csv(tceps_pre_mkeps_clean, "tceps_pre_mkeps_clean_12_3_20.csv", row.names = FALSE)
 ```
 When figuring out the repeats, grab the record ID from the grades and then remove based on when they are different
 
