@@ -72,9 +72,15 @@ Need to link with post TCEPS scores as well
 Need to keep all the original consented folks and what we can from the pre and post testing
 ```{r}
 library(MissMech)
-tceps_demos_pre = merge(tceps_demos_clean, pre_tceps_mkeps, by = "record_id", all.x = TRUE)
 
-TestMCARNormality(tceps_demos_pre[c(10)])
+tcep_missing = tceps_demos %>%
+  filter(consent_signed == 1) %>%
+  filter(mkeps_pre_complete == 2) %>%
+  dplyr::select(record_id, age, race, gender, edu, program_evaluation_exp, matt_time_spent, time_at_cri, att_1, att_2, att_3, att_4) 
+
+tceps_demos_pre = merge(tcep_missing, pre_tceps_mkeps, by = "record_id", all.x = TRUE)
+
+TestMCARNormality(tceps_demos_pre[-c(1)])
 
 ```
 Number of people who completed the post testing 
