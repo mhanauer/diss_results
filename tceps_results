@@ -162,16 +162,7 @@ library(effsize)
 effsize::cohen.d(pre_post_tecps$post_tcep_mkeps_total, pre_post_tecps$pre_tcep_mkeps_total)
 
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
+Test retest reliability
+```{r}
+cor.test(pre_post_tecps$post_tcep_mkeps_total, pre_post_tecps$pre_tcep_mkeps_total, method = "spearman", alternative = "greater")
+```
