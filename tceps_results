@@ -10,8 +10,8 @@ Load data and library
 ```{r}
 library(dplyr)
 library(prettyR)
-#setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/tceps/original")
-setwd("/Volumes/GoogleDrive/My Drive/Diss/Results/tceps/original")
+setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/tceps/original")
+#setwd("/Volumes/GoogleDrive/My Drive/Diss/Results/tceps/original")
 tceps_demos = read.csv("MKEPSPsychoPreInform_DATA_2020-11-23_0619.csv", header = TRUE)
 n_total = dim(tceps_demos)[1]
 ```
@@ -44,8 +44,8 @@ n_consent = dim(tceps_demos_clean)[1]
 
 Load in re-rated and create a total score
 ```{r}
-#setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/tceps/rating/pre/re_rated")
-setwd("/Volumes/GoogleDrive/My Drive/Diss/Results/tceps/rating/pre/re_rated")
+setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/tceps/rating/pre/re_rated")
+#setwd("/Volumes/GoogleDrive/My Drive/Diss/Results/tceps/rating/pre/re_rated")
 re_score_tceps_pre_mkeps_elaina = read.csv("re_score_tceps_pre_mkeps_sara.csv", header = TRUE)
 re_score_tceps_pre_mkeps_sara = read.csv("re_score_tceps_pre_mkeps_sara.csv", header = TRUE)
 
@@ -69,14 +69,14 @@ pre_tceps_mkeps
 ```
 Load in post re-rated and create a total score
 ```{r}
-#setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/tceps/rating/post/re_rated")
-setwd("/Volumes/GoogleDrive/My Drive/Diss/Results/tceps/rating/post/re_rated")
+setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/tceps/rating/post/re_rated")
+#setwd("/Volumes/GoogleDrive/My Drive/Diss/Results/tceps/rating/post/re_rated")
 
 re_score_tceps_post_mkeps_elaina = read.csv("re_rated_elaina_post_tceps_mkeps.csv", header = TRUE)
 re_score_tceps_post_mkeps_sara = read.csv("re_rated_sara_post_tceps_mkeps.csv", header = TRUE)
 
 re_score_sara_tceps_mkeps_post_score =  re_score_tceps_post_mkeps_sara %>%
-  select(c(record_id, mkeps_1_score, mkeps_2_score, mkeps_3_score, mkeps_4_score, mkeps_5_score, mkeps_6_score, mkeps_7_score, mkeps_8_score, mkeps_9_score, mkeps_10_score, mkeps_11_score, mkeps_12_score, mkeps_13_score, mkeps_14_score, mkeps_15_score))
+  dplyr::select(c(record_id, mkeps_1_score, mkeps_2_score, mkeps_3_score, mkeps_4_score, mkeps_5_score, mkeps_6_score, mkeps_7_score, mkeps_8_score, mkeps_9_score, mkeps_10_score, mkeps_11_score, mkeps_12_score, mkeps_13_score, mkeps_14_score, mkeps_15_score))
 re_score_sara_tceps_mkeps_post_score
 
 re_score_elaina_tceps_mkeps_post_score =  re_score_tceps_post_mkeps_elaina %>%
@@ -98,7 +98,6 @@ Now link the two for testing for missingness
 Need to link with post TCEPS scores as well
 Need to keep all the original consented folks and what we can from the pre and post testing
 ```{r}
-install.packages("MissMech")
 library(MissMech)
 
 tcep_missing = tceps_demos %>%
@@ -113,8 +112,12 @@ TestMCARNormality(tceps_demos_pre[-c(1)])
 
 ```
 Get pre and post testing matched results
+Get post and demos for participant characteristics
 ```{r}
-pre_post_tceps = merge(pre_tceps_mkeps, post_tceps_mkeps, all.y = TRUE)
+pre_post_tecps = merge(pre_tceps_mkeps, post_tceps_mkeps, all.y =  TRUE)
+
+pre_post_tceps_demos = merge(tceps_demos_clean, pre_tceps_mkeps, by = "record_id", all.x = TRUE)
+demos_post_tceps = merge(pre_post_tceps_demos, post_tceps_mkeps, all.y = TRUE)
 ```
 
 
@@ -127,36 +130,11 @@ n_complete_pre_post
 n_tceps_results = data.frame(n_total, n_consent, n_complete_pre, n_complete_pre_post)
 write.csv(n_tceps_results, "n_tceps_results.csv", row.names = FALSE)
 ```
-Data cleaning for post descriptives
-```{r}
-tceps_demos_clean = tceps_demos %>%
-  filter(consent_signed == 1) %>%
-  filter(mkeps_pre_complete == 2) %>%
-  dplyr::select(record_id, age, race, gender, edu, program_evaluation_exp, matt_time_spent, time_at_cri, att_1, att_2, att_3, att_4) %>%
-  rowwise() %>%
-    mutate(att_total = sum(c_across(c(att_1:att_4)))) %>%
-  select(-c(att_1:att_4)) %>%
-  #Change race to 1 versus all others
-  mutate(race_white = if_else(race == 1, "White", "Non-white"),
-         gender_female = if_else(gender == 2, "Female", "Non-female"),
-         program_eval_2_or_less = if_else(program_evaluation_exp <= 4, "<= 2 years", "> 2 years"), 
-         matt_time_spent_none = if_else(matt_time_spent == 1, "None","> None"),
-        time_at_cri_2_or_less = if_else(time_at_cri <= 4, "<= 2 years", "> 2 years")) %>%
-  mutate_at(.vars = c("race", "gender", "edu", "program_evaluation_exp", "matt_time_spent", "time_at_cri"), .funs = as.factor) %>%
-  #Edu = 4, Bachelor's degree | 5, Master's degree  7, Doctoral degree (e.g. PhD)
-  select(-c(race, gender, program_evaluation_exp, matt_time_spent, time_at_cri)) %>%
-  mutate(edu = case_when(edu == "4"~ "Bachelors", 
-          edu == "5" ~ "Masters",
-          edu == "7" ~  "Doctoral degree (e.g. PhD)"))
-tceps_demos_clean
-n_consent = dim(tceps_demos_clean)[1]
-```
-
 
 Participant characteristics
 ```{r}
 library(tableone)
-tab1 =  CreateTableOne(data = tceps_demos_clean[-c(1)])
+tab1 =  CreateTableOne(data = demos_post_tceps[-c(1)])
 tab1 = print(tab1, showAllLevels = TRUE)
 tab1
 write.csv(tab1, file = "tab1.csv")
@@ -166,21 +144,21 @@ TCEPS training results
 ##################################
 Check normality and get means sds for pre and post of attitudes and MKEPS
 ```{r}
-tceps_pre = merge(tceps_demos_clean, pre_tceps_mkeps, by = "record_id", all.y = TRUE)
-tceps_demos_pre = tceps_demos_pre %>%
-  select(att_total, pre_tcep_mkeps_total)
-tceps_demos_pre
-mean_sd =  CreateTableOne(data = tceps_demos_pre)
-mean_sd
-#write.csv(mean_sd, file = "mean_sd.csv")
+
 par(mfrow = c(2,2))
-hist_pre_attitude = hist(tceps_demos_pre$att_total, main = "Histogram of Pre TCEPS Total Attitude Scores", xlab = "Pre TCEPS Total Attitude Scores")
-qqplot_pre_attitude = qqnorm(tceps_demos_pre$att_total, main = "Normal Q-Q Plot of Pre TCEPS Total Attitude Scores")
-hist_pre_mkeps = hist(tceps_demos_pre$pre_tcep_mkeps_total, main = "Histogram of Pre TCEPS Total MKEPS Scores", xlab = "Pre TCEPS Total Attitude Scores")
-qqplot_pre_mkeps = qqnorm(tceps_demos_pre$pre_tcep_mkeps_total, main = "Normal Q-Q Plot of Pre TCEPS Total MKEPS Scores")
+hist_pre_mkeps = hist(pre_post_tecps$pre_tcep_mkeps_total, main = "Histogram of Pre TCEPS Total MKEPS Scores", xlab = "Pre TCEPS MKEPS Total Scores")
+qqplot_pre_mkeps = qqnorm(pre_post_tecps$pre_tcep_mkeps_total, main = "Normal Q-Q Plot of Pre TCEPS Total MKEPS Scores")
+
+hist_post_mkeps = hist(pre_post_tecps$post_tcep_mkeps_total, main = "Histogram of Post TCEPS Total MKEPS Scores", xlab = "Post TCEPS MKEPS Scores")
+qqplot_pre_mkeps = qqnorm(tceps_demos_pre$pre_tcep_mkeps_total, main = "Normal Q-Q Plot of Post TCEPS MKEPS Total Scores")
+
 
 ```
-When figuring out the repeats, grab the record ID from the grades and then remove based on when they are different
+Statistical test for differences
+```{r}
+wilcox.test(pre_post_tecps$post_tcep_mkeps_total, pre_post_tecps$pre_tcep_mkeps_total, paired = TRUE, )
+```
+
 
 
 
