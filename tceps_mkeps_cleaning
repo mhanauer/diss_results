@@ -40,7 +40,6 @@ write.csv(score_diff_elaina_sara_pre_mkeps, "score_diff_elaina_sara_pre_mkeps.cs
 ```
 Now get total scores for pre mkeps
 ```{r}
-
 setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/tceps/rating/pre/re_rated")
 re_score_sara_tceps_mkeps_pre = read.csv("re_score_tceps_pre_mkeps_sara.csv", header = TRUE, na.strings = c("", " "))
 re_score_elaina_tceps_mkeps_pre = read.csv("re_score_tceps_pre_mkeps_elaina.csv", header= TRUE, na.strings = c("", " "))
@@ -59,4 +58,38 @@ pre_tceps_mkeps$pre_tcep_mkeps_total = apply(re_score_sara_tceps_mkeps_pre_score
 pre_tceps_mkeps
 
 ```
+####################################
+Post TCEPS MKEPS
+Load up Post-TCEPS MKEPS data
+```{r}
+#setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/tceps/rating/post/rated")
+setwd("/Volumes/GoogleDrive/My Drive/Diss/Results/tceps/rating/post/rated")
+sara_tceps_mkeps_post = read.csv("sara_post_tceps_mkeps.csv", header = TRUE, na.strings = c("", " "))
+elaina_tceps_mkeps_post = read.csv("elaina_post_tceps_mkeps.csv", header= TRUE, na.strings = c("", " "))
+### Remove IDs 59 and 104
+library(dplyr)
+sara_tceps_mkeps_post = sara_tceps_mkeps_post %>%
+  filter(record_id != 59) %>%
+  filter(record_id != 104)
 
+elaina_tceps_mkeps_post = elaina_tceps_mkeps_post %>%
+  filter(record_id != 59) %>%
+  filter(record_id != 104)
+
+```
+Evaluate differences Sara and Elaina 
+```{r}
+sara_tceps_mkeps_post_score =  sara_tceps_mkeps_post %>%
+  select(c(record_id, mkeps_1_score, mkeps_2_score, mkeps_3_score, mkeps_4_score, mkeps_5_score, mkeps_6_score, mkeps_7_score, mkeps_8_score, mkeps_9_score, mkeps_10_score, mkeps_11_score, mkeps_12_score, mkeps_13_score, mkeps_14_score, mkeps_15_score))
+sara_tceps_mkeps_post_score
+
+elaina_tceps_mkeps_post_score =  elaina_tceps_mkeps_post %>%
+  select(c(record_id, mkeps_1_score, mkeps_2_score, mkeps_3_score, mkeps_4_score, mkeps_5_score, mkeps_6_score, mkeps_7_score, mkeps_8_score, mkeps_9_score, mkeps_10_score, mkeps_11_score, mkeps_12_score, mkeps_13_score, mkeps_14_score, mkeps_15_score))
+elaina_tceps_mkeps_post_score
+
+score_diff_elaina_sara_post_mkeps = sara_tceps_mkeps_post_score[,2:16] - elaina_tceps_mkeps_post_score[,2:16]
+sum(is.na(score_diff_elaina_sara_post_mkeps))
+write.csv(score_diff_elaina_sara_post_mkeps, "score_diff_elaina_sara_post_mkeps.csv", row.names = FALSE)
+
+
+```
