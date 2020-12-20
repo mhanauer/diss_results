@@ -66,6 +66,31 @@ pre_tceps_mkeps
 n_complete_pre =  dim(pre_tceps_mkeps)[1]
 pre_tceps_mkeps
 ```
+Load in post re-rated and create a total score
+```{r}
+#setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/tceps/rating/post/re_rated")
+
+re_score_tceps_post_mkeps_elaina = read.csv("re_score_tceps_post_mkeps_sara.csv", header = TRUE)
+re_score_tceps_post_mkeps_sara = read.csv("re_score_tceps_post_mkeps_sara.csv", header = TRUE)
+
+re_score_sara_tceps_mkeps_post_score =  re_score_tceps_post_mkeps_sara %>%
+  select(c(record_id, mkeps_1_score, mkeps_2_score, mkeps_3_score, mkeps_4_score, mkeps_5_score, mkeps_6_score, mkeps_7_score, mkeps_8_score, mkeps_9_score, mkeps_10_score, mkeps_11_score, mkeps_12_score, mkeps_13_score, mkeps_14_score, mkeps_15_score))
+re_score_sara_tceps_mkeps_post_score
+
+re_score_elaina_tceps_mkeps_post_score =  re_score_tceps_post_mkeps_elaina %>%
+  select(c(record_id, mkeps_1_score, mkeps_2_score, mkeps_3_score, mkeps_4_score, mkeps_5_score, mkeps_6_score, mkeps_7_score, mkeps_8_score, mkeps_9_score, mkeps_10_score, mkeps_11_score, mkeps_12_score, mkeps_13_score, mkeps_14_score, mkeps_15_score))
+re_score_elaina_tceps_mkeps_post_score
+
+post_tceps_mkeps  = re_score_sara_tceps_mkeps_post_score[,2:16] + re_score_elaina_tceps_mkeps_post_score[,2:16] 
+post_tceps_mkeps$record_id = re_score_sara_tceps_mkeps_post_score$record_id
+post_tceps_mkeps$post_tcep_mkeps_total = apply(re_score_sara_tceps_mkeps_post_score[,2:16], 1, sum)
+### Select only the total score and id
+post_tceps_mkeps = post_tceps_mkeps %>%
+  select(record_id, post_tcep_mkeps_total)
+post_tceps_mkeps
+n_complete_post =  dim(post_tceps_mkeps)[1]
+post_tceps_mkeps
+```
 
 Now link the two for testing for missingness
 Need to link with post TCEPS scores as well
