@@ -156,7 +156,11 @@ qqplot_pre_mkeps = qqnorm(tceps_demos_pre$pre_tcep_mkeps_total, main = "Normal Q
 ```
 Statistical test for differences
 ```{r}
-wilcox.test(pre_post_tecps$post_tcep_mkeps_total, pre_post_tecps$pre_tcep_mkeps_total, paired = TRUE, )
+wilcox.test(pre_post_tecps$post_tcep_mkeps_total, pre_post_tecps$pre_tcep_mkeps_total, paired = TRUE, alternative  = "greater")
+t.test(pre_post_tecps$post_tcep_mkeps_total, pre_post_tecps$pre_tcep_mkeps_total, paired = TRUE, alternative  = "greater")
+library(effsize)
+effsize::cohen.d(pre_post_tecps$post_tcep_mkeps_total, pre_post_tecps$pre_tcep_mkeps_total)
+
 ```
 
 
