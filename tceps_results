@@ -19,7 +19,7 @@ Data cleaning for pre descriptives to evaluate missingness
 ```{r}
 tceps_demos_clean = tceps_demos %>%
   filter(consent_signed == 1) %>%
-  dplyr::select(record_id, age, race, gender, edu, program_evaluation_exp, matt_time_spent, time_at_cri, att_1, att_2, att_3, att_4) %>%
+  dplyr::select(record_id, age, race, gender, edu, program_evaluation_exp, matt_time_spent, time_at_cri, ethnicity, att_1, att_2, att_3, att_4) %>%
   rowwise() %>%
     mutate(att_total = sum(c_across(c(att_1:att_4)))) %>%
   select(-c(att_1:att_4)) %>%
@@ -28,10 +28,10 @@ tceps_demos_clean = tceps_demos %>%
          gender_female = if_else(gender == 2, "Female", "Non-female"),
          program_eval_2_or_less = if_else(program_evaluation_exp <= 4, "<= 2 years", "> 2 years"), 
          matt_time_spent_none = if_else(matt_time_spent == 1, "None","> None"),
-        time_at_cri_2_or_less = if_else(time_at_cri <= 4, "<= 2 years", "> 2 years")) %>%
-  mutate_at(.vars = c("race", "gender", "edu", "program_evaluation_exp", "matt_time_spent", "time_at_cri"), .funs = as.factor) %>%
+        time_at_cri_2_or_less = if_else(time_at_cri <= 4, "<= 2 years", "> 2 years"),
+        non_hispanic = if_else(ethnicity == 0, "Non-Hispanic", "Hispanic")) %>%
   #Edu = 4, Bachelor's degree | 5, Master's degree  7, Doctoral degree (e.g. PhD)
-  select(-c(race, gender, program_evaluation_exp, matt_time_spent, time_at_cri)) %>%
+  select(-c(race, ethnicity, gender, program_evaluation_exp, matt_time_spent, time_at_cri)) %>%
   mutate(edu = case_when(edu == "4"~ "Bachelors", 
           edu == "5" ~ "Masters",
           edu == "7" ~  "Doctoral degree (e.g. PhD)")) %>%
@@ -101,7 +101,7 @@ library(MissMech)
 
 tcep_missing = tceps_demos %>%
   filter(consent_signed == 1) %>%
-  dplyr::select(record_id, age, race, gender, edu, program_evaluation_exp, matt_time_spent, time_at_cri, att_1, att_2, att_3, att_4) %>%
+  dplyr::select(record_id, age, race, gender, edu, program_evaluation_exp, matt_time_spent, time_at_cri, ethnicity, att_1, att_2, att_3, att_4) %>%
   rowwise() %>%
     mutate(att_total = sum(c_across(c(att_1:att_4)))) %>%
   select(-c(att_1:att_4)) %>%
@@ -110,10 +110,10 @@ tcep_missing = tceps_demos %>%
          program_eval_2_or_less = if_else(program_evaluation_exp <= 4, 1, 0), 
          matt_time_spent_none = if_else(matt_time_spent == 1, 1,0),
         time_at_cri_2_or_less = if_else(time_at_cri <= 4, 1, 0),
-        edu_bach = if_else(edu == 4, 1, 0)) %>%
-  mutate_at(.vars = c("race", "gender", "edu", "program_evaluation_exp", "matt_time_spent", "time_at_cri"), .funs = as.factor) %>%
-  #Edu = 4, Bachelor's degree | 5, Master's degree  7, Doctoral degree (e.g. PhD)
-  select(-c(race, age, edu, gender, program_evaluation_exp, matt_time_spent, time_at_cri)) %>%
+        edu_bach = if_else(edu == 4, 1, 0),
+        non_hispanic = if_else(ethnicity == 0, 1, 0)) %>%
+        #Edu = 4, Bachelor's degree | 5, Master's degree  7, Doctoral degree (e.g. PhD)
+  select(-c(race, age, ethnicity, edu, gender, program_evaluation_exp, matt_time_spent, time_at_cri)) %>%
   filter(record_id != 59) %>%
   filter(record_id != 104)
 
@@ -127,7 +127,7 @@ Get pre and post testing matched results
 Get post and demos for participant characteristics
 ```{r}
 pre_post_tecps = merge(pre_tceps_mkeps, post_tceps_mkeps, all.y =  TRUE)
-
+n_complete_pre_post = dim(pre_post_tecps)[1]
 pre_post_tceps_demos = merge(tceps_demos_clean, pre_tceps_mkeps, by = "record_id", all.x = TRUE)
 demos_post_tceps = merge(pre_post_tceps_demos, post_tceps_mkeps, all.y = TRUE)
 ```
@@ -140,6 +140,7 @@ n_consent
 n_complete_pre
 n_complete_pre_post
 n_tceps_results = data.frame(n_total, n_consent, n_complete_pre, n_complete_pre_post)
+n_tceps_results
 write.csv(n_tceps_results, "n_tceps_results.csv", row.names = FALSE)
 ```
 
@@ -176,7 +177,7 @@ effsize::cohen.d(pre_post_tecps$post_tcep_mkeps_total, pre_post_tecps$pre_tcep_m
 ```
 Test retest reliability
 ```{r}
-cor.test(pre_post_tecps$post_tcep_mkeps_total, pre_post_tecps$pre_tcep_mkeps_total, method = "spearman", alternative = "greater")
+cor.test(pre_post_tecps$post_tcep_mkeps_total, pre_post_tecps$pre_tcep_mkeps_total, method = "spearman")
 ```
 
 
