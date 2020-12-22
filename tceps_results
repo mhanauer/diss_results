@@ -159,10 +159,10 @@ Check normality and get means sds for pre and post of attitudes and MKEPS
 ```{r}
 
 par(mfrow = c(2,2))
-hist_pre_mkeps = hist(pre_post_tecps$pre_tcep_mkeps_total, main = "Histogram of Pre TCEPS Total MKEPS Scores", xlab = "Pre TCEPS MKEPS Total Scores")
-qqplot_pre_mkeps = qqnorm(pre_post_tecps$pre_tcep_mkeps_total, main = "Normal Q-Q Plot of Pre TCEPS Total MKEPS Scores")
+hist_pre_mkeps = hist(pre_post_tecps$pre_tcep_mkeps_total, main = "Histogram of Pre TCEPS MKEPS Total Scores", xlab = "Pre TCEPS MKEPS Total Scores")
+qqplot_pre_mkeps = qqnorm(pre_post_tecps$pre_tcep_mkeps_total, main = "Normal Q-Q Plot of Pre TCEPS MKEPS Total Scores")
 
-hist_post_mkeps = hist(pre_post_tecps$post_tcep_mkeps_total, main = "Histogram of Post TCEPS Total MKEPS Scores", xlab = "Post TCEPS MKEPS Scores")
+hist_post_mkeps = hist(pre_post_tecps$post_tcep_mkeps_total, main = "Histogram of Post TCEPSMKEPS Total Scores", xlab = "Post TCEPS MKEPS Total Scores")
 qqplot_pre_mkeps = qqnorm(tceps_demos_pre$pre_tcep_mkeps_total, main = "Normal Q-Q Plot of Post TCEPS MKEPS Total Scores")
 
 
