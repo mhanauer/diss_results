@@ -8,8 +8,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 Load up AMT data
 ```{r}
-setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/mkeps_pilot")
-#setwd("/Volumes/GoogleDrive/My Drive/Diss/Results/mkeps_pilot")
+setwd("/Volumes/GoogleDrive/My Drive/Diss/Results/mkeps_pilot")
 mkeps = read.csv("mkeps_10_31_20.csv", header = TRUE, na.strings = c("", " "))
 head(mkeps)
 library(lubridate)
@@ -139,6 +138,9 @@ library(tableone)
 tab1_mkeps =  CreateTableOne(data = mkeps_part_all[2:9])
 tab1_mkeps = print(tab1_mkeps, showAllLevels = TRUE)
 write.csv(tab1_mkeps, file = "tab1_mkeps.csv")
+range(mkeps_part_all$minutes, na.rm = TRUE)
+hist(mkeps_part_all$minutes)
+describe.factor(mkeps_part_all$minutes)
 ```
 Evaluate differences Sara and Elaina 
 ```{r}
