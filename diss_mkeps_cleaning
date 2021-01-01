@@ -105,7 +105,7 @@ mkeps_grade_part = mkeps_grade %>%
 
 ### Limit original MKEPS to just the variables you want
 mkeps_part = mkeps %>%
- dplyr::select(Duration..in.seconds., Q42,age, edu, race, gender, evaluation, research, id) %>%
+ dplyr::select(Duration..in.seconds., Q42,age, edu, race, gender, evaluation, research, id, AMT_ID_check_4) %>%
   rename(minutes = Duration..in.seconds.) %>%
   mutate(minutes = as.numeric(minutes)) %>%
   mutate(minutes = minutes / 60) %>%
@@ -216,7 +216,5 @@ N's for flowchart
 n_inital_mkeps 
 n_not_eligble_mkeps
 n_remove_bad_responses
-
-
 ```
 
