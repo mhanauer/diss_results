@@ -78,10 +78,10 @@ mkeps_grade_matt_elaina_10_30_20 = mkeps_grade[37:73,]
 write.csv(mkeps_grade_matt_elaina_10_30_20, "mkeps_grade_matt_elaina_10_30_20.csv", row.names = FALSE)
 mkeps_grade_sara_elaina_10_30_20 = mkeps_grade[74:110,]
 write.csv(mkeps_grade_sara_elaina_10_30_20, "mkeps_grade_sara_elaina_10_30_20.csv", row.names = FALSE)
-
-
-
-
+mkeps_grade
+minutes_dat =  mkeps_grade %>%
+  filter(id  %in% c(89, 120)) 
+write.csv(minutes_dat, "minutes_dat.csv", row.names = FALSE)
 ```
 Now get grading for second round
 ```{r}
@@ -132,6 +132,22 @@ mkeps_part_all
 
 
 ```
+Get the number of people who took less than ten minutes
+Get the number of people who took more than 60 minutes
+Get the number of people took more than 10 minutes but less than or equal to 60
+```{r}
+describe.factor(mkeps_part_all$minutes, decr.order = FALSE)
+p_less_equal_10 = round(1.428571 + 2.142857 + 0.7142857,2)
+c_less_equal_10 = round(2.000000 + 3.000000 + 1.0000000,2)
+less_equal_10
+c_less_equal_10
+p_greater_60 = round(1.428571 + 0.7142857 +  2.142857 +  3.571429 +  0.7142857 +  0.7142857 +  1.428571 +  0.7142857 +  0.7142857 +  0.7142857 +  0.7142857 +  0.7142857 +  0.7142857 +  0.7142857 +  0.7142857 +  0.7142857 +  0.7142857,2)
+c_greater_60 = 2.000000 + 2.000000 +  1.0000000 +  3.000000 +  5.000000 +  1.0000000 +  1.0000000 +  2.000000 +  1.0000000 +  1.0000000 +  1.0000000 +  1.0000000 +  1.0000000 +  1.0000000 +  1.0000000 +  1.0000000 +  1.0000000 +  1
+results_time = data.frame(p_less_equal_10, c_less_equal_10, p_greater_60, c_greater_60)
+results_time
+```
+
+
 Now create Table 1 for MKEPS
 ```{r}
 library(tableone)
@@ -149,7 +165,7 @@ minutes_dat
 ```
 Evaluate differences Sara and Elaina 
 ```{r}
-setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/mkeps_main/graded/scored")
+setwd("~/Google Drive/Diss/Results/mkeps_main/graded/scored")
 sara_elaina = read.csv("sara_elaina.csv", header = TRUE)
 elaina_sara = read.csv("elaina_sara.csv", header = TRUE)
 elaina_sara_score =  elaina_sara[c(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46)]
@@ -163,7 +179,7 @@ write.csv(score_diff_sara_elaina, "score_diff_sara_elaina.csv", row.names = FALS
 ```
 Evaluate differences Elaina and Matt 
 ```{r}
-setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/mkeps_main/graded/scored")
+setwd("~/Google Drive/Diss/Results/mkeps_main/graded/scored")
 elaina_matt = read.csv("elaina_matt.csv", header = TRUE)
 matt_elaina = read.csv("matt_elaina.csv", header = TRUE)
 library(dplyr)
@@ -180,7 +196,7 @@ write.csv(score_diff_elaina_matt, "score_diff_elaina_matt.csv", row.names = FALS
 ```
 Evaluate differences Sara and matt
 ```{r}
-setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/mkeps_main/graded/scored")
+setwd("~/Google Drive/Diss/Results/mkeps_main/graded/scored")
 sara_matt = read.csv("sara_matt.csv", header = TRUE)
 matt_sara = read.csv("matt_sara.csv", header = TRUE)
 library(dplyr)
