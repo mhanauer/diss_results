@@ -217,4 +217,25 @@ n_inital_mkeps
 n_not_eligble_mkeps
 n_remove_bad_responses
 ```
+Evaluate differences between MKEPS total scores for those who took more and less than one hour
+Sorting by ID puts them in the same order
+Need to get mkeps_data from mkeps analysis
+ID 1 = ACDHRWQ7DFDOL should be 9 minutes
+```{r}
+mkeps_data = mkeps_data[order(mkeps_data$AMT_ID_check_4),]
+mkeps_part_all = mkeps_part_all[order(mkeps_part_all$AMT_ID_check_4),]
+
+hour_dat = data.frame(mkeps_data, minutes = mkeps_part_all$minutes)
+hour_dat %>%
+  filter(AMT_ID_check_4 == "ACDHRWQ7DFDOL")
+### Create a variable for more than one hour then run wilcox analysis
+hour_dat = hour_dat %>%
+  mutate(hour = if_else(minutes >= 60, 1, 0))
+hour_dat$total_mkeps_score = apply(hour_dat[1:15], 1, sum, na.rm = TRUE)        
+install.packages("descr")
+library(descr)
+compmeans(hour_dat$total_mkeps_score, hour_dat$hour)
+wilcox.test(hour_dat$total_mkeps_score ~ hour_dat$hour)
+```
+
 
