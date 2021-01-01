@@ -117,7 +117,7 @@ Ok try dimensionality and internal consistency
 ```{r}
 dim(mkeps_data[1:15])
 
-par_out = fa.parallel(mkeps_data[1:15], fa = "fa")
+par_out = fa.parallel(mkeps_data[1:15], fa = "fa", n.iter = 1000)
 par_out
 
 map_out =  vss(mkeps_data[1:15], n = 3)
@@ -151,7 +151,7 @@ Ok try dimensionality and internal consistency
 ```{r}
 dim(mkeps_data[1:15])
 
-par_out = fa.parallel(hour_dat_psych[1:15], fa = "fa")
+par_out = fa.parallel(hour_dat_psych[1:15], fa = "fa", n.iter = 1000)
 par_out
 
 map_out =  vss(hour_dat_psych[1:15], n = 3)
