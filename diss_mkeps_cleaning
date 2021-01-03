@@ -6,236 +6,163 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-Load up AMT data
+Load up data and library for MKEPS analysis
 ```{r}
-setwd("~/Google Drive/Diss/Results/mkeps_pilot")
-mkeps = read.csv("mkeps_10_31_20.csv", header = TRUE, na.strings = c("", " "))
-head(mkeps)
-library(lubridate)
-mkeps =  mkeps[-c(1,2),] 
-start_date = list()
-
-for(i in 1:dim(mkeps)[1]){
- start_date[[i]] =  strsplit(mkeps$StartDate[[i]]," ")[[1]][1]
-}
-
-start_date = unlist(start_date)
-start_date = ymd(start_date)
-mkeps$StartDate = start_date
-mkeps$StartDate
-
-### Only include those from October and after, because that is when you started the study
-mkeps = subset(mkeps, StartDate >= "2020-10-26")
-
-### N for inital MKEPS responses
-n_inital_mkeps =  dim(mkeps)[1]
-
-mkeps = mkeps[!is.na(mkeps$AMT_ID_5),]
-### Create an ID 
-mkeps$id = 1:dim(mkeps)[1]
-
-### N after removing those who were not eligible
-n_not_eligble_mkeps =  dim(mkeps)[1]
-
-```
-
-Clean data for grading
-```{r}
-mkeps$Q_RelevantIDFraudScore = as.numeric(mkeps$Q_RelevantIDFraudScore)
-mkeps_grade = mkeps
-### Just subset their AMT ID and mkeps questions for merging later
-mkeps_grade = mkeps_grade[,c(6, 32:46, 55, 56)]
-## Get time to help you identify low quality repsonses
-mkeps_grade$Duration..in.seconds. = as.numeric(mkeps_grade$Duration..in.seconds.)
-mkeps_grade$minutes = mkeps_grade$Duration..in.seconds. / 60
-
-
-mkeps_grade = subset(mkeps_grade, AMT_ID_check_4 != "A2HO2H720XV8HU" & AMT_ID_check_4 != "ACXP8KHFX06KR" & AMT_ID_check_4 != "AIX406KFA5O9J" & AMT_ID_check_4 != "A3JZYTT9UYV6U6" & AMT_ID_check_4 != "AMX69IKJUQ9EA" &  AMT_ID_check_4 != "A2F7DOEGHSENOY" &  AMT_ID_check_4 != "ALPH6Y4RS0G8C" &  AMT_ID_check_4 != "A2JET844BDM5YN" &  AMT_ID_check_4 != "A39CP46L3ODZHZ" &  AMT_ID_check_4 != "A2UJS8ELW3YUN9" &  AMT_ID_check_4 != "AH8EQV7IR97WE" &  AMT_ID_check_4 != "A5ZCUUP1MEKPJ" &  AMT_ID_check_4 != "A23C7BGEJEJOV8" & AMT_ID_check_4 != "A3LMF9D786PL8S" & AMT_ID_check_4 != "A3ANS61F3A656X" & AMT_ID_check_4 != "A1K8LPVDPWZSF9" & AMT_ID_check_4 != "AWHO5KT1KH28P" & AMT_ID_check_4 != "A2M6NAML0AGAJZ" & AMT_ID_check_4 != "A2OWM5OSE4SCFS" & AMT_ID_check_4 != "A39VB8OXHQZ6ZW" & AMT_ID_check_4 != "A1SGW0LMP12O59" &  AMT_ID_check_4 != "A3QN5EE1VSSJFS" & AMT_ID_check_4 != "A3OG21UO1AWTR7" & AMT_ID_check_4 != "A333RHGFT13OQM" & AMT_ID_check_4 != "A2RCT46ET5RNQN" & AMT_ID_check_4 != "A2ZLJQWCM8KU36" & AMT_ID_check_4 != "AE2U85I1TQ1E" & AMT_ID_check_4 != "A2TNZ157R0KWAC" & AMT_ID_check_4 != "COPIEDAXTUNPWPKSGPE" & AMT_ID_check_4 != "A1KXG3R48T74R3"  & AMT_ID_check_4 != "A2DIPD0N2YL9ST"  & AMT_ID_check_4 != "A36FVHZ2BEPYNM" & AMT_ID_check_4 != "AX6SVQJPPRLLJ" & AMT_ID_check_4 != "A28DMXUJCMX6SC" & AMT_ID_check_4 != "A3MNWO15YNEZNB" & AMT_ID_check_4 != "A82TD4PQWBMD1" & AMT_ID_check_4 != "A3RZAUWEE77S82" & AMT_ID_check_4 != "A3VGK3RB5D4NUM" & AMT_ID_check_4 != "A2QTJOFOT0709Q" & AMT_ID_check_4 != "A2F7DOEGHSENOY" & AMT_ID_check_4 != "A23C7BGEJEJOV8"  & AMT_ID_check_4 != "A6WKYH2T5ARRC" & AMT_ID_check_4 != "ACJFWPKW4JA59" & AMT_ID_check_4 != "A7NYDMF5BMLB7" & AMT_ID_check_4 != "A3JB1MBS7KFAGJ" & AMT_ID_check_4 != "A2M6NAML0AGAJZ" & AMT_ID_check_4 != "zgfdagdgdas" & AMT_ID_check_4 != "AAONZ5XA6MR5N" & AMT_ID_check_4 != "A3VRCG7T1S9D4J"  & AMT_ID_check_4 != "A2QTVSDHALU9GN" & AMT_ID_check_4 != "AJ5DO6BRNXQOA"  & AMT_ID_check_4 != "A3OUHE4W0AGUPE" & AMT_ID_check_4 != "A34IHD290HFEXY")
-
-dim(mkeps_grade)
-range(mkeps_grade$minutes)
-mean(mkeps_grade$minutes)
-mkeps_grade$Duration..in.seconds. = NULL
-mkeps_grade$minutes = NULL
-write.csv(mkeps_grade, "mkeps_grade.csv", row.names = FALSE)
-dim(mkeps_grade)
-
-n_remove_bad_responses = dim(mkeps_grade)[1]
-
-```
-
-
-Now just MKEPS for getting data for grading for first round
-```{r}
-
-mkeps_grade
-mkeps_grade_all_10_30_20 = mkeps_grade
-write.csv(mkeps_grade_all_10_30_20, "mkeps_grade_all_10_30_20.csv", row.names = FALSE)
-
-mkeps_grade_matt_sara_10_30_20 = mkeps_grade[1:36,]
-write.csv(mkeps_grade_matt_sara_10_30_20, "mkeps_grade_matt_sara_10_30_20.csv", row.names = FALSE)
-mkeps_grade_matt_elaina_10_30_20 = mkeps_grade[37:73,]
-write.csv(mkeps_grade_matt_elaina_10_30_20, "mkeps_grade_matt_elaina_10_30_20.csv", row.names = FALSE)
-mkeps_grade_sara_elaina_10_30_20 = mkeps_grade[74:110,]
-write.csv(mkeps_grade_sara_elaina_10_30_20, "mkeps_grade_sara_elaina_10_30_20.csv", row.names = FALSE)
-mkeps_grade
-minutes_dat =  mkeps_grade %>%
-  filter(id  %in% c(89, 120)) 
-write.csv(minutes_dat, "minutes_dat.csv", row.names = FALSE)
-```
-Now get grading for second round
-```{r}
-
-mkeps_grade_matt_sara_11_29_20 = mkeps_grade
-mkeps_grade_matt_sara_11_29_20 = mkeps_grade[111:120,]
-write.csv(mkeps_grade_matt_sara_11_29_20, "mkeps_grade_matt_sara_11_29_20.csv", row.names = FALSE)
-mkeps_grade_matt_elaina_11_29_20 = mkeps_grade[121:130,]
-write.csv(mkeps_grade_matt_elaina_11_29_20, "mkeps_grade_matt_elaina_11_29_20.csv", row.names = FALSE)
-mkeps_grade_sara_elaina_11_29_20 = mkeps_grade[131:140,]
-write.csv(mkeps_grade_sara_elaina_11_29_20, "mkeps_grade_sara_elaina_11_29_20.csv", row.names = FALSE)
-
-```
-Get participant characteristics for study two 
-```{r}
-### subset for the first 140 and grab just the ids to match the original data with the cleaned
 library(dplyr)
-mkeps_grade_part = mkeps_grade %>%
-  slice(1:140) %>%
-  dplyr::select(id)
+library(psych)
+setwd("~/Google Drive/Diss/Results/mkeps_main/graded")
+elaina_matt_rescore = read.csv("elaina_matt_rescore.csv", header = TRUE)
+elaina_sara_rescore = read.csv("elaina_sara_rescore.csv", header = TRUE)
+matt_elaina_rescore = read.csv("matt_elaina_rescore.csv", header = TRUE)
+sara_elaina_rescore = read.csv("sara_elaina_rescore.csv", header = TRUE)
+sara_matt_rescore = read.csv("sara_matt_rescore.csv", header = TRUE)
+matt_sara_rescore = read.csv("matt_sara_rescore.csv", header = TRUE)
+### Just grab the scores
+#[c(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46)]
+## Add 46 back if you need the ID
+elaina_matt_rescore_clean = elaina_matt_rescore %>%
+    dplyr::select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46) %>%
+    rowwise() %>%
+        mutate(mkeps_total_elaina_matt = sum(c_across(1:15)))
+elaina_matt_rescore_clean
 
-### Limit original MKEPS to just the variables you want
-mkeps_part = mkeps %>%
- dplyr::select(Duration..in.seconds., Q42,age, edu, race, gender, evaluation, research, id, AMT_ID_check_4) %>%
-  rename(minutes = Duration..in.seconds.) %>%
-  mutate(minutes = as.numeric(minutes)) %>%
-  mutate(minutes = minutes / 60) %>%
-  mutate(minutes = if_else(minutes > 200, -9, minutes)) %>%
-  mutate(minutes = na_if(minutes, -9)) %>%
-  mutate(age = as.numeric(age)) %>%
-  mutate(minutes = round(minutes)) %>%
-  # Recode education and race to anything less than 5%
-  mutate(race = case_when(
-    race == "American Indian or Alaska Native" ~ "Another racial identity",
-    race == "Asian" ~ "Another racial identity",
-    race == "Multiracial" ~ "Another racial identity",
-    race == "Prefer not to respond" ~ "Another racial identity",
-    ### This says if not any of these options keep the current response
-    TRUE ~ as.character(race))) %>%
-  mutate(edu = case_when(
-    edu == "Doctoral degree (e.g. PhD)" ~ "Master's or greater",
-    edu == "Master's degree" ~ "Master's or greater",
-    edu == "Professional degree (e.g. MD)"  ~ "Master's or greater",
-    edu == "Bachelor's degree" ~ "Bachelor's degree",
-    TRUE ~ "Less than Bachelor's degree"))
-mkeps_part_all = merge(mkeps_grade_part, mkeps_part, by = "id")
-mkeps_part_all
+elaina_sara_rescore_clean = elaina_sara_rescore %>%
+    dplyr::select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46) %>%
+    rowwise() %>%
+        mutate(mkeps_total_elaina_sara = sum(c_across(1:15)))
+elaina_sara_rescore_clean
 
+matt_elaina_rescore_clean = matt_elaina_rescore %>%
+    dplyr::select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46) %>%
+    rowwise() %>%
+        mutate(mkeps_total_matt_elaina = sum(c_across(1:15)))
+matt_elaina_rescore_clean
 
-```
-Get the number of people who took less than ten minutes
-Get the number of people who took more than 60 minutes
-Get the number of people took more than 10 minutes but less than or equal to 60
-```{r}
-describe.factor(mkeps_part_all$minutes, decr.order = FALSE)
-p_less_equal_10 = round(1.428571 + 2.142857 + 0.7142857,2)
-c_less_equal_10 = round(2.000000 + 3.000000 + 1.0000000,2)
-less_equal_10
-c_less_equal_10
-p_greater_60 = round(1.428571 + 0.7142857 +  2.142857 +  3.571429 +  0.7142857 +  0.7142857 +  1.428571 +  0.7142857 +  0.7142857 +  0.7142857 +  0.7142857 +  0.7142857 +  0.7142857 +  0.7142857 +  0.7142857 +  0.7142857 +  0.7142857,2)
-c_greater_60 = 2.000000 + 2.000000 +  1.0000000 +  3.000000 +  5.000000 +  1.0000000 +  1.0000000 +  2.000000 +  1.0000000 +  1.0000000 +  1.0000000 +  1.0000000 +  1.0000000 +  1.0000000 +  1.0000000 +  1.0000000 +  1.0000000 +  1
-results_time = data.frame(p_less_equal_10, c_less_equal_10, p_greater_60, c_greater_60)
-results_time
-```
+sara_elaina_rescore_clean = sara_elaina_rescore %>%
+  dplyr::select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46) %>%
+  rowwise() %>%
+  mutate(mkeps_total_sara_elaina = sum(c_across(1:15)))
+sara_elaina_rescore_clean
 
+sara_matt_rescore_clean = sara_matt_rescore %>%
+    dplyr::select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46) %>%
+    rowwise() %>%
+        mutate(mkeps_total_sara_matt = sum(c_across(1:15)))
+sara_matt_rescore_clean
 
-Now create Table 1 for MKEPS
-```{r}
-library(tableone)
-library(prettyR)
-tab1_mkeps =  CreateTableOne(data = mkeps_part_all[2:9])
-tab1_mkeps = print(tab1_mkeps, showAllLevels = TRUE)
-write.csv(tab1_mkeps, file = "tab1_mkeps.csv")
-range(mkeps_part_all$minutes, na.rm = TRUE)
-hist(mkeps_part_all$minutes)
-describe.factor(mkeps_part_all$minutes)
-### Review the minutes
-minutes_dat = mkeps_part_all %>%
-  filter(minutes <= 5)
-minutes_dat
-```
-Evaluate differences Sara and Elaina 
-```{r}
-setwd("~/Google Drive/Diss/Results/mkeps_main/graded/scored")
-sara_elaina = read.csv("sara_elaina.csv", header = TRUE)
-elaina_sara = read.csv("elaina_sara.csv", header = TRUE)
-elaina_sara_score =  elaina_sara[c(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46)]
-sara_elaina_score = sara_elaina[c(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46)]
-
-score_diff_sara_elaina = sara_elaina_score[1:15] - elaina_sara_score[1:15]
-score_diff_sara_elaina$id = sara_elaina_score$AMT_ID_check_4
-write.csv(score_diff_sara_elaina, "score_diff_sara_elaina.csv", row.names = FALSE)
-### Identify the rows 
+matt_sara_rescore_clean = matt_sara_rescore %>%
+    dplyr::select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46) %>%
+    rowwise() %>%
+        mutate(mkeps_total_matt_sara = sum(c_across(1:15)))
+matt_sara_rescore_clean
 
 ```
-Evaluate differences Elaina and Matt 
+Create ICC data sets 
+elaina_matt_rescore_clean
+elaina_sara_rescore_clean
+matt_elaina_rescore_clean
+sara_elaina_rescore_clean
+sara_matt_rescore_clean
+matt_sara_rescore_clean
 ```{r}
-setwd("~/Google Drive/Diss/Results/mkeps_main/graded/scored")
-elaina_matt = read.csv("elaina_matt.csv", header = TRUE)
-matt_elaina = read.csv("matt_elaina.csv", header = TRUE)
-library(dplyr)
-elaina_matt_score = elaina_matt %>%
-  select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46) 
+icc_dat_matt_elaina = data.frame(mkeps_total_elaina_matt = elaina_matt_rescore_clean$mkeps_total_elaina_matt, mkeps_total_matt_elaina = matt_elaina_rescore_clean$mkeps_total_matt_elaina)
 
-matt_elaina_score = matt_elaina %>%
-  select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46) 
+icc_dat_sara_elaina = data.frame( mkeps_total_sara_elaina = sara_elaina_rescore_clean$mkeps_total_sara_elaina, mkeps_total_elaina_sara = elaina_sara_rescore_clean$mkeps_total_elaina_sara)
 
-score_diff_elaina_matt = elaina_matt_score[,1:15] - matt_elaina_score[,1:15]
-sum(is.na(score_diff_elaina_matt))
-write.csv(score_diff_elaina_matt, "score_diff_elaina_matt.csv", row.names = FALSE)
+icc_dat_matt_sara = data.frame(mkeps_total_matt_sara = matt_sara_rescore_clean$mkeps_total_matt_sara, mkeps_total_sara_matt = sara_matt_rescore_clean$mkeps_total_sara_matt)
 
 ```
-Evaluate differences Sara and matt
+Now try ICC
 ```{r}
-setwd("~/Google Drive/Diss/Results/mkeps_main/graded/scored")
-sara_matt = read.csv("sara_matt.csv", header = TRUE)
-matt_sara = read.csv("matt_sara.csv", header = TRUE)
-library(dplyr)
-sara_matt_score = sara_matt %>%
-  select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46) 
-
-matt_sara_score = matt_sara %>%
-  select(2,5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 46) 
-
-score_diff_sara_matt = sara_matt_score[,1:15] - matt_sara_score[,1:15]
-sum(is.na(score_diff_sara_matt))
-write.csv(score_diff_sara_matt, "score_diff_sara_matt.csv", row.names = FALSE)
+ICC(icc_dat_matt_elaina)
+ICC(icc_dat_sara_elaina)
+ICC(icc_dat_matt_sara)
 
 ```
-N's for flowchart
+Create sum scores of items for data sets
+Sum scores then stack each other
+
+elaina_matt_rescore_clean
+matt_elaina_rescore_clean
+
+elaina_sara_rescore_clean
+sara_elaina_rescore_clean
+
+sara_matt_rescore_clean
+matt_sara_rescore_clean
 ```{r}
-n_inital_mkeps 
-n_not_eligble_mkeps
-n_remove_bad_responses
+matt_elaina_sum = cbind(elaina_matt_rescore_clean[1:15] + matt_elaina_rescore_clean[1:15], AMT_ID_check_4 = matt_elaina_rescore_clean$AMT_ID_check_4)
+matt_elaina_sum
+
+elaina_sara_sum = cbind(elaina_sara_rescore_clean[1:15] + sara_elaina_rescore_clean[1:15], AMT_ID_check_4 = elaina_sara_rescore_clean$AMT_ID_check_4)
+
+sara_matt_sum = cbind(sara_matt_rescore_clean[1:15] + matt_sara_rescore_clean[1:15], AMT_ID_check_4 = sara_matt_rescore_clean$AMT_ID_check_4)
+
+mkeps_data = rbind(matt_elaina_sum, elaina_sara_sum, sara_matt_sum)
+mkeps_data
+write.csv(mkeps_data, "mkeps_data.csv", row.names = FALSE)
 ```
-Evaluate differences between MKEPS total scores for those who took more and less than one hour
-Sorting by ID puts them in the same order
-Need to get mkeps_data from mkeps analysis
-ID 1 = ACDHRWQ7DFDOL should be 9 minutes
+Get item means and sds look for NAs
 ```{r}
+apply(mkeps_data[1:15], 2, range)
+
+tab1_mkeps_items =  CreateTableOne(data = mkeps_data[1:15])
+tab1_mkeps_items = print(tab1_mkeps_items, showAllLevels = TRUE)
+write.csv(tab1_mkeps_items, file = "tab1_mkeps_items.csv")
+sum(is.na(mkeps_data[1:15]))
+```
+
+
+Ok try dimensionality and internal consistency
+```{r}
+dim(mkeps_data[1:15])
+
+par_out = fa.parallel(mkeps_data[1:15], fa = "fa", n.iter = 1000)
+par_out
+
+map_out =  vss(mkeps_data[1:15], n = 3)
+map_out
+
+efa_out_all = fa(mkeps_data[1:15], nfactors=1, rotate="varimax")
+efa_out_all
+fa.diagram(efa_out_all)
+
+alpha_out = psych::alpha(mkeps_data[1:15])
+alpha_out
+```
+Try item analysis
+```{r}
+library(sjPlot)
+item_analysis = tab_itemscale(mkeps_data[1:15], file = "item_analysis.csv")
+item_analysis
+```
+
+###########
+Trying resulting with those who took more than one removed
+```{r}
+### Sort by AMT id
 mkeps_data = mkeps_data[order(mkeps_data$AMT_ID_check_4),]
-mkeps_part_all = mkeps_part_all[order(mkeps_part_all$AMT_ID_check_4),]
+hour_dat_psych = data.frame(mkeps_data, hour = hour_dat$hour)
+hour_dat_psych = hour_dat_psych %>%
+  filter(hour == 0)
+dim(hour_dat_psych)
+```
+Ok try dimensionality and internal consistency
+```{r}
+dim(mkeps_data[1:15])
 
-hour_dat = data.frame(mkeps_data, minutes = mkeps_part_all$minutes)
-hour_dat %>%
-  filter(AMT_ID_check_4 == "ACDHRWQ7DFDOL")
-### Create a variable for more than one hour then run wilcox analysis
-hour_dat = hour_dat %>%
-  mutate(hour = if_else(minutes >= 60, 1, 0))
-hour_dat$total_mkeps_score = apply(hour_dat[1:15], 1, sum, na.rm = TRUE)        
-install.packages("descr")
-library(descr)
-compmeans(hour_dat$total_mkeps_score, hour_dat$hour)
-wilcox.test(hour_dat$total_mkeps_score ~ hour_dat$hour)
+par_out = fa.parallel(hour_dat_psych[1:15], fa = "fa", n.iter = 1000)
+par_out
+
+map_out =  vss(hour_dat_psych[1:15], n = 3)
+map_out
+
+efa_out_all = fa(hour_dat_psych[1:15], nfactors=1, rotate="varimax")
+efa_out_all
+fa.diagram(efa_out_all)
+
+alpha_out = psych::alpha(hour_dat_psych[1:15])
+alpha_out
 ```
 
 
