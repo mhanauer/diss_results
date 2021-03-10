@@ -128,7 +128,6 @@ mkeps_part = mkeps %>%
     edu == "Bachelor's degree" ~ "Bachelor's degree",
     TRUE ~ "Less than Bachelor's degree"))
 mkeps_part_all = merge(mkeps_grade_part, mkeps_part, by = "id")
-mkeps_part_all
 
 
 ```
@@ -139,7 +138,6 @@ Get the number of people took more than 10 minutes but less than or equal to 60
 describe.factor(mkeps_part_all$minutes, decr.order = FALSE)
 p_less_equal_10 = round(1.428571 + 2.142857 + 0.7142857,2)
 c_less_equal_10 = round(2.000000 + 3.000000 + 1.0000000,2)
-less_equal_10
 c_less_equal_10
 p_greater_60 = round(1.428571 + 0.7142857 +  2.142857 +  3.571429 +  0.7142857 +  0.7142857 +  1.428571 +  0.7142857 +  0.7142857 +  0.7142857 +  0.7142857 +  0.7142857 +  0.7142857 +  0.7142857 +  0.7142857 +  0.7142857 +  0.7142857,2)
 c_greater_60 = 2.000000 + 2.000000 +  1.0000000 +  3.000000 +  5.000000 +  1.0000000 +  1.0000000 +  2.000000 +  1.0000000 +  1.0000000 +  1.0000000 +  1.0000000 +  1.0000000 +  1.0000000 +  1.0000000 +  1.0000000 +  1.0000000 +  1
