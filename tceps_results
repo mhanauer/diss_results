@@ -11,7 +11,7 @@ Load data and library
 library(dplyr)
 library(prettyR)
 #setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/tceps/original")
-setwd("/Volumes/GoogleDrive/My Drive/Diss/Results/tceps/original")
+setwd("~/Google Drive/Diss/Results/tceps/original")
 tceps_demos = read.csv("MKEPSPsychoPreInform_DATA_2020-11-23_0619.csv", header = TRUE)
 n_total = dim(tceps_demos)[1]
 ```
@@ -43,8 +43,7 @@ n_consent = dim(tceps_demos_clean)[1]
 
 Load in re-rated and create a total score
 ```{r}
-#setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/tceps/rating/pre/re_rated")
-setwd("/Volumes/GoogleDrive/My Drive/Diss/Results/tceps/rating/pre/re_rated")
+setwd("~/Google Drive/Diss/Results/tceps/rating/pre/re_rated")
 re_score_tceps_pre_mkeps_elaina = read.csv("re_score_tceps_pre_mkeps_sara.csv", header = TRUE)
 re_score_tceps_pre_mkeps_sara = read.csv("re_score_tceps_pre_mkeps_sara.csv", header = TRUE)
 
@@ -68,8 +67,7 @@ pre_tceps_mkeps
 ```
 Load in post re-rated and create a total score
 ```{r}
-#setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/tceps/rating/post/re_rated")
-setwd("/Volumes/GoogleDrive/My Drive/Diss/Results/tceps/rating/post/re_rated")
+setwd("~/Google Drive/Diss/Results/tceps/rating/post/re_rated")
 
 re_score_tceps_post_mkeps_elaina = read.csv("re_rated_elaina_post_tceps_mkeps.csv", header = TRUE)
 re_score_tceps_post_mkeps_sara = read.csv("re_rated_sara_post_tceps_mkeps.csv", header = TRUE)
@@ -97,9 +95,6 @@ Now link the two for testing for missingness
 Need to link with post TCEPS scores as well
 Need to keep all the original consented folks and what we can from the pre and post testing
 ```{r}
-install.packages("MissMech")
-library(MissMech)
-
 tcep_missing = tceps_demos %>%
   filter(consent_signed == 1) %>%
   dplyr::select(record_id, age, race, gender, edu, program_evaluation_exp, matt_time_spent, time_at_cri, ethnicity, att_1, att_2, att_3, att_4) %>%
@@ -121,7 +116,6 @@ tcep_missing = tceps_demos %>%
 tceps_demos_pre = merge(tcep_missing, pre_tceps_mkeps, by = "record_id", all.x = TRUE)
 tceps_demos_pre_post = merge(tceps_demos_pre, post_tceps_mkeps, by = "record_id", all.x = TRUE)
 
-TestMCARNormality(tceps_demos_pre_post[-c(1)])
 
 ```
 Get pre and post testing matched results
@@ -152,6 +146,7 @@ tab1 =  CreateTableOne(data = demos_post_tceps[-c(1)])
 tab1 = print(tab1, showAllLevels = TRUE)
 tab1
 write.csv(tab1, file = "tab1.csv")
+write.csv(demos_post_tceps, "demos_post_tceps.csv", row.names = FALSE)
 ```
 ###################################
 TCEPS training results
