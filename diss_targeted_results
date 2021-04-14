@@ -11,7 +11,8 @@ Clean the data
 1. Clean the date completed
 ```{r}
 library(prettyR)
-setwd("C:/Users/Matthew.Hanauer/Google Drive/Diss/Results/targeted_needs_survey")
+setwd("~/Google Drive/Diss/Results/targeted_needs_survey")
+
 #setwd("/Volumes/GoogleDrive/My Drive/Diss/Results/targeted_needs_survey")
 data_needs = read.csv("CRINeedsAssessment_DATA_2020-10-15_1653.csv", header  = TRUE)
 ### Remove me, Taylor, Nathan, Jennifer, Bre, and Joan before we count for percentage complete
@@ -180,6 +181,7 @@ exp_research greater than two years = 1
 matt_time_spent = Greater than zero projects versus none or na = 1 
 employment_length = Great than 4 which more than one year versus one year or less or na
 ```{r}
+library(tableone)
 ## Remove 67 and 62 they are fill in the blanks not counts 
 dat_needs[,67:69]
 dat_needs[,62:69]
@@ -191,8 +193,9 @@ demos_dat$exp_eval_2_great = ifelse(demos_dat$exp_eval_2_great >= 5, 1, 0)
 demos_dat$exp_research_2_great = ifelse(demos_dat$exp_research_2_great >= 5, 1, 0)
 demos_dat$matt_time_spent_0_great = ifelse(demos_dat$matt_time_spent_0_great >= 2, 1, 0)
 demos_dat$employ_length_1_great = ifelse(demos_dat$employ_length_1_great >= 5, 1, 0)
-demos_dat_results = apply(demos_dat, 2, function(x){describe.factor(x, decr.order = FALSE)})
-demos_dat_results = t(data.frame(demos_dat_results))
+demos_dat = data.frame(apply(demos_dat, 2,as.factor))
+demos_dat_results = CreateTableOne(data = demos_dat)
+demos_dat_results = print(demos_dat_results, showAllLevels = TRUE)
 demos_dat_results
 ```
 
