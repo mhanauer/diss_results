@@ -168,7 +168,7 @@ Statistical test for differences
 wilcox.test(pre_post_tecps$post_tcep_mkeps_total, pre_post_tecps$pre_tcep_mkeps_total, paired = TRUE, alternative  = "greater")
 t.test(pre_post_tecps$post_tcep_mkeps_total, pre_post_tecps$pre_tcep_mkeps_total, paired = TRUE, alternative  = "greater")
 library(effsize)
-effsize::cohen.d(pre_post_tecps$post_tcep_mkeps_total, pre_post_tecps$pre_tcep_mkeps_total)
+effsize::cohen.d(pre_post_tecps$post_tcep_mkeps_total, pre_post_tecps$pre_tcep_mkeps_total, paired = TRUE)
 
 ```
 Test retest reliability
